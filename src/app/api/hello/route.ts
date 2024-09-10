@@ -1,21 +1,15 @@
-// import { Hono } from 'hono';
-// import { handle } from 'hono/vercel';
+import { users } from '@/drizzle/schema';
+import { db } from '@/lib/db';
+import { Hono } from 'hono';
+import { handle } from 'hono/vercel';
 
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
-// declare global {
-//   namespace NodeJS {
-//     interface ProcessEnv {
-//       DB: D1Database;
-//     }
-//   }
-// }
+const app = new Hono().basePath('/api');
 
-// const app = new Hono().basePath('/api');
+app.get('/hello', async (c) => {
+  const results = db.select().from(users).all();
+  return c.json(results);
+});
 
-// app.get('/hello', async (c) => {
-//   const { results } = await process.env.DB.prepare('SELECT * FROM users').all();
-//   return c.json(results);
-// });
-
-// export const GET = handle(app);
+export const GET = handle(app);
