@@ -10,8 +10,9 @@ const config = {
     'next/core-web-vitals',
     'prettier',
     'plugin:tailwindcss/recommended',
+    'plugin:next-on-pages/recommended',
   ],
-  plugins: ['tailwindcss', 'unused-imports'],
+  plugins: ['tailwindcss', 'unused-imports', 'next-on-pages'],
   settings: {
     tailwindcss: {
       callees: ['cn'],
@@ -56,6 +57,7 @@ const config = {
     },
   ],
   rules: {
+    'next-on-pages/no-unsupported-configs': 'warn',
     // console.logが残っていればwarn
     'no-console': [
       'warn',
