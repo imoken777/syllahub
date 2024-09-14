@@ -1,3 +1,4 @@
+import type { Course } from '@/types/course';
 import { load } from 'cheerio';
 import { assembleSyllabusLink, parseDayAndPeriod, parseSemester, parseYearOfStudy } from './parser';
 
@@ -20,20 +21,7 @@ const scrapeSyllabus = async (html: string) => {
   // テーブルの各行 (tr) をループしてすべての情報を取得
   const syllabusData = $('tbody tr')
     .toArray()
-    .reduce<
-      {
-        semester: string;
-        courseName: string;
-        groupName: string;
-        instructors: string[];
-        day: string | undefined;
-        period: string | undefined;
-        typeOfConduction: string;
-        yearOfStudy: { startYear: number; endYear: number } | undefined;
-        languageOptions: string;
-        syllabusLink: URL | undefined;
-      }[]
-    >((acc, row) => {
+    .reduce<Course[]>((acc, row) => {
       const courseName = $(row)
         .find('td[data-th="授業科目名 / Course Name"] .data_content')
         .text()
