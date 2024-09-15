@@ -9,5 +9,6 @@ const app = honoFactory.createApp().basePath('/api');
 const routes = app.route('/course', courseRouter);
 
 export const GET = handle(routes);
+export const PUT = handle(routes);
 
 export type APIType = typeof routes;
