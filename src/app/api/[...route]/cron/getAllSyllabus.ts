@@ -1,8 +1,8 @@
-import type { Course } from '@/types/course';
+import type { CreateCourseDto } from '@/types/course';
 import { load } from 'cheerio';
 import { assembleSyllabusLink, parseDayAndPeriod, parseSemester, parseYearOfStudy } from './parser';
 
-export const fetchSyllabusHtml = async (url: URL) =>
+const fetchSyllabusHtml = async (url: URL) =>
   await fetch(url.toString())
     .then((response) =>
       response.ok
@@ -13,7 +13,7 @@ export const fetchSyllabusHtml = async (url: URL) =>
       throw new Error(`Failed to fetch: ${url.toString()} - ${error}`);
     });
 
-const scrapeSyllabus = async (html: string) => {
+const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
   const $ = load(html);
 
   const groupName = $('td.left b').text().trim();
@@ -21,7 +21,7 @@ const scrapeSyllabus = async (html: string) => {
   // テーブルの各行 (tr) をループしてすべての情報を取得
   const syllabusData = $('tbody tr')
     .toArray()
-    .reduce<Course[]>((acc, row) => {
+    .reduce<CreateCourseDto[]>((acc, row) => {
       const courseName = $(row)
         .find('td[data-th="授業科目名 / Course Name"] .data_content')
         .text()
@@ -81,7 +81,7 @@ const scrapeSyllabus = async (html: string) => {
   return syllabusData;
 };
 
-export const getAllSyllabus = async () => {
+export const getAllSyllabus = async (): Promise<CreateCourseDto[]> => {
   // https://g-sys.toyo.ac.jp/syllabus/category/18596 から 29 ページ分のシラバスを取得
   const startPageId = 18596;
   const pageIds = Array.from({ length: 29 }, (_, i) => startPageId + i);

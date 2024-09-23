@@ -1,4 +1,4 @@
-export type Course = {
+export type CreateCourseDto = {
   courseName: string;
   semester: string;
   groupName: string;
@@ -14,3 +14,5 @@ export type Course = {
   day: string | null;
   period: string | null;
 };
+
+export type CourseModel = CreateCourseDto & { courseId: number };
