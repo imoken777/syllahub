@@ -24,13 +24,15 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.33.0",
+    "drizzle-zod": "^0.5.1",
     "hono": "^4.5.11",
     "lucide-react": "^0.441.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.2",
