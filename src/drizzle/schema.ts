@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
 export const courses = sqliteTable('courses', {
   courseId: integer('courseId').primaryKey(),
@@ -16,3 +17,7 @@ export const courses = sqliteTable('courses', {
   day: text('day'),
   period: text('period'),
 });
+
+export const insertCourseSchema = createInsertSchema(courses);
+
+export const selectCourseSchema = createSelectSchema(courses);
