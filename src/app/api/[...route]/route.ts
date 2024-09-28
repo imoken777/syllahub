@@ -1,15 +1,17 @@
 import { handle } from 'hono/vercel';
-import { courseRouter } from './course';
-import { cronApp } from './cron';
-import { honoFactory } from './factory';
+import { courseRouter } from './internal/course';
+import { internalFactory } from './internal/factory';
+import { cronRouter } from './public/cron';
+import { publicFactory } from './public/factory';
 
 export const runtime = 'edge';
+const basePath = '/api';
 
-const app = honoFactory.createApp().basePath('/api');
+const internalApp = internalFactory.createApp().basePath(basePath);
+const internalRoutes = internalApp.route('/course', courseRouter);
+export const GET = handle(internalRoutes);
+export type APIType = typeof internalRoutes;
 
-const routes = app.route('/course', courseRouter);
-
-export const GET = handle(routes);
-export type APIType = typeof routes;
-
-export const PUT = handle(cronApp);
+const publicApp = publicFactory.createApp().basePath(basePath);
+const publicRoutes = publicApp.route('/cron', cronRouter);
+export const PUT = handle(publicRoutes);

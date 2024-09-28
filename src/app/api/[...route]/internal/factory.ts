@@ -1,7 +1,7 @@
 import { cors } from 'hono/cors';
 import { createFactory } from 'hono/factory';
 
-const honoFactory = createFactory({
+const internalFactory = createFactory({
   initApp: (app) => {
     app.use(
       cors({
@@ -12,4 +12,4 @@ const honoFactory = createFactory({
   },
 });
 
-export { honoFactory };
+export { internalFactory };

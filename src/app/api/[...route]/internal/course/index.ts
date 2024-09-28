@@ -1,9 +1,9 @@
 import { courses } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import type { CourseModel } from '@/types/course';
-import { honoFactory } from '../factory';
+import { internalFactory } from '../factory';
 
-export const courseRouter = honoFactory.createApp().get('/', async (c) => {
+export const courseRouter = internalFactory.createApp().get('/', async (c) => {
   try {
     const data: CourseModel[] = await db.select().from(courses).all();
     return c.json(data);
