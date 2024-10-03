@@ -16,7 +16,7 @@ export const courses = sqliteTable('courses', {
   groupName: text('groupName').notNull(),
   instructors: text('instructors', { mode: 'json' }).$type<string[]>().notNull(),
   languageOptions: text('languageOptions', { enum: languageOptions }).notNull(),
-  typeOfConduction: text('typeOfConduction', { enum: typeOfConductionOptions }).notNull(),
+  typeOfConduction: text('typeOfConduction', { enum: typeOfConductionOptions }),
   yearOfStudy: text('yearOfStudy', { mode: 'json' })
     .$type<{ startYear: number; endYear: number }>()
     .default(sql`null`),

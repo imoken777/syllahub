@@ -32,15 +32,18 @@ export const parseSemester = (text: string): Semester => {
  * 曜日と時限のテキストからそれぞれの値を抽出する関数
  *
  * 入力例: '金,３限Fri,3rd'
- * 出力例: ['金', '3']
+ * 出力例: ['金', '3限']
  *
  * @param {string} text - 日本語と英語で書かれた曜日と時限の情報
- * @returns {[Day | null, Period | null] } - 曜日と時限を配列で返す [day, period]
+ * @returns {[Day | null, Period | null]} - 曜日と時限を配列で返す [day, period]
  */
 export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => {
-  const match = text.match(/(.+),.+限.+,(\d+)/);
-  const day = daySchema.safeParse(match?.[1]);
-  const period = periodSchema.safeParse(match?.[2]);
+  const matchJapanese = text.match(/([月火水木金土日]+),\s*/);
+  const matchEnglish = text.match(/([A-Za-z]+),\s*(\d+)(?:st|nd|rd|th)?/);
+
+  const day = daySchema.safeParse(matchJapanese?.[1]);
+  const period = periodSchema.safeParse(`${matchEnglish?.[2]}限`);
+
   return [day.data ?? null, period.data ?? null];
 };
 
@@ -53,10 +56,11 @@ export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => 
  * @param {string} text - 実施形態のテキスト
  * @returns {TypeOfConduction} - 実施形態の日本語部分
  */
-export const parseTypeOfConduction = (text: string): TypeOfConduction => {
-  const [japanese] = text.split(/^[\u3000-\u9FFF\u3040-\u30FF（）]+/);
-  const typeOfConduction = typeOfConductionSchema.parse(japanese);
-  return typeOfConduction;
+export const parseTypeOfConduction = (text: string): TypeOfConduction | null => {
+  const match = text.match(/^[\u3000-\u9FFF\u3040-\u30FF（）ー]+/);
+  const japanese = match ? match[0] : null;
+  const typeOfConduction = typeOfConductionSchema.safeParse(japanese);
+  return typeOfConduction.success ? typeOfConduction.data : null;
 };
 
 /**
@@ -90,10 +94,10 @@ export const parseYearOfStudy = (text: string): { startYear: number; endYear: nu
  * 出力例: '日本語'
  *
  * @param {string} text - 解析する元データ
- * @returns {LanguageOptions} - 使用言語の日本語部分 (日本語 | 英語)
+ * @returns {LanguageOptions} - 使用言語の日本語部分 (日本語 | 英語 | 語学系科目)
  */
 export const parseLanguageOptions = (text: string): LanguageOptions => {
-  const [japanese] = text.split(/(?=[A-Za-z])/);
+  const japanese = text.split(/ /)[0].split('/')[0].trim();
   const languageOptions = languageOptionsSchema.parse(japanese);
   return languageOptions;
 };

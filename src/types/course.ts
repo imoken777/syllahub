@@ -6,7 +6,7 @@ export type CreateCourseDto = {
   groupName: string;
   instructors: string[];
   languageOptions: LanguageOptions;
-  typeOfConduction: TypeOfConduction;
+  typeOfConduction: TypeOfConduction | null;
   yearOfStudy: {
     startYear: number;
     endYear: number;

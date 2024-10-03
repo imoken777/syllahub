@@ -6,4 +6,4 @@ export const typeOfConductionOptions = [
 ] as const;
 export const dayOptions = ['月', '火', '水', '木', '金'] as const;
 export const periodOptions = ['1限', '2限', '3限', '4限', '5限', '6限'] as const;
-export const languageOptions = ['日本語', '英語'] as const;
+export const languageOptions = ['日本語', '英語', '語学系科目'] as const;
