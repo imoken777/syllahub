@@ -1,27 +1,70 @@
-'use client';
-
 import { Button } from '@/components/ui/Button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { dayOptions, periodOptions } from '@/constants/searchOptions';
 import { cn } from '@/lib/utils';
+import type { Day, Period } from '@/types/searchOptions';
 import { CalendarIcon } from 'lucide-react';
-import { useState } from 'react';
+import type { FC } from 'react';
+import { Fragment } from 'react';
 
-const daysOfWeek = ['月', '火', '水', '木', '金'];
-const periods = ['1限', '2限', '3限', '4限', '5限', '6限'];
+type Props = {
+  dayState?: Day;
+  periodState?: Period;
+  setDayChange: (day: Day | undefined) => void;
+  setPeriodChange: (period: Period | undefined) => void;
+};
 
-export const TimeTablePicker = () => {
-  const [selectedSlots, setSelectedSlots] = useState<{ day: string; period: string }[]>([]);
+export const TimeTablePicker: FC<Props> = ({
+  dayState,
+  periodState,
+  setDayChange,
+  setPeriodChange,
+}) => {
+  const handleFieldChange = (day: Day, period: Period) => {
+    const isSameSelection = dayState === day && periodState === period;
+    setDayChange(isSameSelection ? undefined : day);
+    setPeriodChange(isSameSelection ? undefined : period);
+  };
 
-  const handleSelectSlot = (day: string, period: string) => {
-    const isSelected = selectedSlots.some((slot) => slot.day === day && slot.period === period);
+  const handleDayChange = (day: Day | undefined) => {
+    setPeriodChange(undefined);
+    setDayChange(day !== dayState || periodState ? day : undefined);
+  };
 
-    if (isSelected) {
-      setSelectedSlots(
-        selectedSlots.filter((slot) => !(slot.day === day && slot.period === period)),
-      );
-    } else {
-      setSelectedSlots([...selectedSlots, { day, period }]);
+  const handlePeriodChange = (period: Period | undefined) => {
+    setDayChange(undefined);
+    setPeriodChange(period !== periodState || dayState ? period : undefined);
+  };
+
+  const isBlankSelection = !dayState && !periodState;
+
+  const selectedLabel = isBlankSelection
+    ? '時間割で指定'
+    : dayState && periodState
+      ? `${dayState}曜${periodState}`
+      : dayState
+        ? `${dayState}曜日`
+        : `${periodState}`;
+
+  const getDayButtonVariant = (day: Day): 'default' | 'outline' => {
+    if (periodState) return 'outline';
+    return dayState === day ? 'default' : 'outline';
+  };
+
+  const getPeriodButtonVariant = (period: Period): 'default' | 'outline' => {
+    if (dayState) return 'outline';
+    return periodState === period ? 'default' : 'outline';
+  };
+
+  const getFieldButtonVariant = (day: Day, period: Period): 'default' | 'outline' => {
+    const isFieldSelected = dayState === day && periodState === period;
+    const isDaySelected = dayState === day && !periodState;
+    const isPeriodSelected = !dayState && periodState === period;
+
+    if (isFieldSelected || isDaySelected || isPeriodSelected) {
+      return 'default';
     }
+    return 'outline';
   };
 
   return (
@@ -30,16 +73,12 @@ export const TimeTablePicker = () => {
         <Button
           variant={'outline'}
           className={cn(
-            'w-[280px] justify-start text-left font-normal',
-            selectedSlots.length === 0 && 'text-muted-foreground',
+            'w-[180px] justify-start text-left font-normal',
+            isBlankSelection && 'text-muted-foreground',
           )}
         >
           <CalendarIcon className="mr-2 size-4" />
-          {selectedSlots.length > 0 ? (
-            selectedSlots.map((slot) => `${slot.day} ${slot.period}`).join(', ')
-          ) : (
-            <span>時間割で指定</span>
-          )}
+          <span>{selectedLabel}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-4">
@@ -47,30 +86,35 @@ export const TimeTablePicker = () => {
           {/* 左上の空白 */}
           <div className="border p-2" />
 
-          {daysOfWeek.map((day) => (
-            <div key={day} className="border p-2 text-center">
+          {dayOptions.map((day) => (
+            <Button
+              key={day}
+              variant={getDayButtonVariant(day)}
+              onClick={() => handleDayChange(day)}
+              className="border p-2 text-center"
+            >
               {day}
-            </div>
+            </Button>
           ))}
 
-          {periods.map((period) => (
-            <>
-              <div key={period} className="border p-2 text-center">
+          {periodOptions.map((period) => (
+            <Fragment key={period}>
+              <Button
+                variant={getPeriodButtonVariant(period)}
+                onClick={() => handlePeriodChange(period)}
+                className="border p-2 text-center"
+              >
                 {period}
-              </div>
-              {daysOfWeek.map((day) => (
+              </Button>
+              {dayOptions.map((day) => (
                 <Button
                   key={`${day}-${period}`}
-                  variant={
-                    selectedSlots.some((slot) => slot.day === day && slot.period === period)
-                      ? 'default'
-                      : 'outline'
-                  }
-                  onClick={() => handleSelectSlot(day, period)}
+                  variant={getFieldButtonVariant(day, period)}
+                  onClick={() => handleFieldChange(day, period)}
                   className="size-full border p-2 text-xs"
                 />
               ))}
-            </>
+            </Fragment>
           ))}
         </div>
       </PopoverContent>
