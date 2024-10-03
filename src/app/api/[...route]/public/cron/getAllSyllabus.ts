@@ -1,11 +1,11 @@
 import type { CreateCourseDto } from '@/types/course';
-import { typeOfConductionSchema } from '@/types/searchOptions';
 import { load } from 'cheerio';
 import {
   assembleSyllabusLink,
   parseDayAndPeriod,
   parseLanguageOptions,
   parseSemester,
+  parseTypeOfConduction,
   parseYearOfStudy,
 } from './parser';
 
@@ -65,7 +65,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
 
       const semester = parseSemester(semesterRaw);
       const [day, period] = parseDayAndPeriod(dayAndPeriodRaw);
-      const typeOfConduction = typeOfConductionSchema.parse(typeOfConductionRaw);
+      const typeOfConduction = parseTypeOfConduction(typeOfConductionRaw);
       const yearOfStudy = parseYearOfStudy(yearOfStudyRaw);
       const languageOptions = parseLanguageOptions(languageOptionsRaw);
       const syllabusLink = assembleSyllabusLink(syllabusLinkRaw);

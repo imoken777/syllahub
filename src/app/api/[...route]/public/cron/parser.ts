@@ -1,9 +1,16 @@
-import type { Day, LanguageOptions, Period, Semester } from '@/types/searchOptions';
+import type {
+  Day,
+  LanguageOptions,
+  Period,
+  Semester,
+  TypeOfConduction,
+} from '@/types/searchOptions';
 import {
   daySchema,
   languageOptionsSchema,
   periodSchema,
   semesterSchema,
+  typeOfConductionSchema,
 } from '@/types/searchOptions';
 
 /**
@@ -35,6 +42,21 @@ export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => 
   const day = daySchema.safeParse(match?.[1]);
   const period = periodSchema.safeParse(match?.[2]);
   return [day.data ?? null, period.data ?? null];
+};
+
+/**
+ * 実施形態のテキストから日本語部分を抽出する関数
+ *
+ * 入力例: '非対面（オンデマンド）On-demand'
+ * 出力例: '非対面（オンデマンド）'
+ *
+ * @param {string} text - 実施形態のテキスト
+ * @returns {TypeOfConduction} - 実施形態の日本語部分
+ */
+export const parseTypeOfConduction = (text: string): TypeOfConduction => {
+  const [japanese] = text.split(/^[\u3000-\u9FFF\u3040-\u30FF（）]+/);
+  const typeOfConduction = typeOfConductionSchema.parse(japanese);
+  return typeOfConduction;
 };
 
 /**
