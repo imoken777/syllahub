@@ -1,6 +1,13 @@
 import type { CreateCourseDto } from '@/types/course';
+import { typeOfConductionSchema } from '@/types/searchOptions';
 import { load } from 'cheerio';
-import { assembleSyllabusLink, parseDayAndPeriod, parseSemester, parseYearOfStudy } from './parser';
+import {
+  assembleSyllabusLink,
+  parseDayAndPeriod,
+  parseLanguageOptions,
+  parseSemester,
+  parseYearOfStudy,
+} from './parser';
 
 const fetchSyllabusHtml = async (url: URL) =>
   await fetch(url.toString())
@@ -40,7 +47,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
         .find('td[data-th="曜日・時限 / Day of the week, period"] .data_content')
         .text()
         .trim();
-      const typeOfConduction = $(row)
+      const typeOfConductionRaw = $(row)
         .find('td[data-th="実施形態 / Type of Conduction"] .data_content')
         .text()
         .trim();
@@ -48,7 +55,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
         .find('td[data-th="対象年次 / Year of Study"] .data_content')
         .text()
         .trim();
-      const languageOptions = $(row)
+      const languageOptionsRaw = $(row)
         .find('td[data-th="主たる使用言語 / Language options"] .data_content')
         .text()
         .trim();
@@ -58,7 +65,9 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
 
       const semester = parseSemester(semesterRaw);
       const [day, period] = parseDayAndPeriod(dayAndPeriodRaw);
+      const typeOfConduction = typeOfConductionSchema.parse(typeOfConductionRaw);
       const yearOfStudy = parseYearOfStudy(yearOfStudyRaw);
+      const languageOptions = parseLanguageOptions(languageOptionsRaw);
       const syllabusLink = assembleSyllabusLink(syllabusLinkRaw);
 
       return [

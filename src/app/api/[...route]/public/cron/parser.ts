@@ -1,3 +1,11 @@
+import type { Day, LanguageOptions, Period, Semester } from '@/types/searchOptions';
+import {
+  daySchema,
+  languageOptionsSchema,
+  periodSchema,
+  semesterSchema,
+} from '@/types/searchOptions';
+
 /**
  * 学期のテキストから日本語部分を抽出する関数
  *
@@ -5,11 +13,12 @@
  * 出力例: '春学期'
  *
  * @param {string} text - 日本語と英語が含まれた学期のテキスト
- * @returns {string} - 学期の日本語部分
+ * @returns {Semester}  - 学期の日本語部分
  */
-export const parseSemester = (text: string): string => {
+export const parseSemester = (text: string): Semester => {
   const [japanese] = text.split(/(?=[A-Za-z])/);
-  return japanese.trim();
+  const semester = semesterSchema.parse(japanese);
+  return semester;
 };
 
 /**
@@ -19,11 +28,13 @@ export const parseSemester = (text: string): string => {
  * 出力例: ['金', '3']
  *
  * @param {string} text - 日本語と英語で書かれた曜日と時限の情報
- * @returns {[string | null, string | null]} - 曜日と時限を配列で返す [day, period]
+ * @returns {[Day | null, Period | null] } - 曜日と時限を配列で返す [day, period]
  */
-export const parseDayAndPeriod = (text: string): [string | null, string | null] => {
+export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => {
   const match = text.match(/(.+),.+限.+,(\d+)/);
-  return [match?.[1] ?? null, match?.[2] ?? null];
+  const day = daySchema.safeParse(match?.[1]);
+  const period = periodSchema.safeParse(match?.[2]);
+  return [day.data ?? null, period.data ?? null];
 };
 
 /**
@@ -48,6 +59,21 @@ export const parseYearOfStudy = (text: string): { startYear: number; endYear: nu
     };
   }
   return null;
+};
+
+/**
+ * 使用言語のテキストから日本語部分を抽出する関数
+ *
+ * 入力例: '日本語 / Japanese'
+ * 出力例: '日本語'
+ *
+ * @param {string} text - 解析する元データ
+ * @returns {LanguageOptions} - 使用言語の日本語部分 (日本語 | 英語)
+ */
+export const parseLanguageOptions = (text: string): LanguageOptions => {
+  const [japanese] = text.split(/(?=[A-Za-z])/);
+  const languageOptions = languageOptionsSchema.parse(japanese);
+  return languageOptions;
 };
 
 /**
