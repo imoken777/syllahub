@@ -23,7 +23,7 @@ import {
  * @returns {Semester}  - 学期の日本語部分
  */
 export const parseSemester = (text: string): Semester => {
-  const [japanese] = text.split(/(?=[A-Za-z])/);
+  const japanese = text.replace(/[A-Za-z]/g, '');
   const semester = semesterSchema.parse(japanese);
   return semester;
 };
@@ -37,12 +37,14 @@ export const parseSemester = (text: string): Semester => {
  * @param {string} text - 日本語と英語で書かれた曜日と時限の情報
  * @returns {[Day | null, Period | null]} - 曜日と時限を配列で返す [day, period]
  */
+const dayPattern = /[月火水木金土日]/;
+const periodPattern = /(\d+)/;
 export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => {
-  const matchJapanese = text.match(/([月火水木金土日]+),\s*/);
-  const matchEnglish = text.match(/([A-Za-z]+),\s*(\d+)(?:st|nd|rd|th)?/);
+  const dayMatch = dayPattern.exec(text);
+  const periodMatch = periodPattern.exec(text);
 
-  const day = daySchema.safeParse(matchJapanese?.[1]);
-  const period = periodSchema.safeParse(`${matchEnglish?.[2]}限`);
+  const day = daySchema.safeParse(dayMatch?.[0]);
+  const period = periodSchema.safeParse(`${periodMatch?.[1]}限`);
 
   return [day.data ?? null, period.data ?? null];
 };
@@ -56,8 +58,9 @@ export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => 
  * @param {string} text - 実施形態のテキスト
  * @returns {TypeOfConduction} - 実施形態の日本語部分
  */
+const typeOfConductionPattern = /^[\u3000-\u9FFF\u3040-\u30FF（）ー]+/;
 export const parseTypeOfConduction = (text: string): TypeOfConduction | null => {
-  const match = text.match(/^[\u3000-\u9FFF\u3040-\u30FF（）ー]+/);
+  const match = typeOfConductionPattern.exec(text);
   const japanese = match ? match[0] : null;
   const typeOfConduction = typeOfConductionSchema.safeParse(japanese);
   return typeOfConduction.success ? typeOfConduction.data : null;
@@ -72,8 +75,9 @@ export const parseTypeOfConduction = (text: string): TypeOfConduction | null => 
  * @param {string} text - 範囲を表す年次のテキスト
  * @returns {{ startYear: number; endYear: number } | null} - 開始年次と終了年次のオブジェクト、もしくは範囲が不正な場合は null
  */
+const yearOfStudyPattern = /(\d+)(?:〜(\d+))?/;
 export const parseYearOfStudy = (text: string): { startYear: number; endYear: number } | null => {
-  const match = text.match(/(\d+)(?:〜(\d+))?/);
+  const match = yearOfStudyPattern.exec(text);
 
   if (match) {
     const startYear = parseInt(match[1], 10);
@@ -111,14 +115,12 @@ export const parseLanguageOptions = (text: string): LanguageOptions => {
  * @param {string | undefined} rawData - 正規表現で解析する元データ
  * @returns {string | null} - シラバスのリンクをstringで、もしくは解析できなかった場合は null
  */
+const syllabusLinkPattern = /showSbs\('(\d+)',\s*'(\d+)',\s*'(\w+)',\s*'(\w+)'\)/;
 export const assembleSyllabusLink = (rawData: string | undefined): string | null => {
   if (!rawData) return null;
-  const match = rawData.match(/showSbs\('(\d+)',\s*'(\d+)',\s*'(\w+)',\s*'(\w+)'\)/);
+  const match = syllabusLinkPattern.exec(rawData);
   if (match) {
     const [, year, code1, code2] = match;
-    // return new URL(
-    //   `https://g-sys.toyo.ac.jp/syllabus/html/gakugai/${year}/${year}_${code1}.html?numbering=${code2}`,
-    // );
     return `https://g-sys.toyo.ac.jp/syllabus/html/gakugai/${year}/${year}_${code1}.html?numbering=${code2}`;
   }
   return null;
