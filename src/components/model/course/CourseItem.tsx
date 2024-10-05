@@ -13,7 +13,7 @@ export const CourseItem = ({ course }: { course: CourseModel }) => (
           <Badge variant={course.semester === '春学期' ? 'spring' : 'autumn'}>
             {course.semester}
           </Badge>
-          <Badge variant="secondary">{`${course.day}曜${course.period}限`}</Badge>
+          <Badge variant="secondary">{`${course.day}曜${course.period}`}</Badge>
           <Badge variant="outline">{course.groupName}</Badge>
           <Badge variant="outline">{course.languageOptions}</Badge>
           <Badge variant="outline">{course.typeOfConduction}</Badge>
