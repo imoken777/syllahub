@@ -1,12 +1,16 @@
-const Home = async () => (
-  // const coursesRes = await apiClient.api.course.$get();
-  // const courses: CourseModel[] = await coursesRes.json();
-  // console.log(courses);
+import { IndexContainer } from '@/components/layout/IndexContainer';
+import { apiClient } from '@/lib/apiClient';
+import type { CourseModel } from '@/types/course';
 
-  <main>
-    <h1>Home</h1>
-    {/* <FilterInput /> */}
-    {/* <CourseList courses={courses} /> */}
-  </main>
-);
+const Home = async () => {
+  const coursesRes = await apiClient.api.course.$get();
+  if (!coursesRes.ok) return <div>データの取得に失敗しました</div>;
+  const courses: CourseModel[] = await coursesRes.json();
+
+  return (
+    <main>
+      <IndexContainer courses={courses} />
+    </main>
+  );
+};
 export default Home;
