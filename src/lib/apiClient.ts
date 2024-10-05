@@ -1,4 +1,5 @@
 import type { APIType } from '@/app/api/[...route]/route';
 import { hc } from 'hono/client';
 
-export const apiClient = hc<APIType>('/');
+const baseUrl = new URL('https://sillahub.pages.dev/');
+export const apiClient = hc<APIType>(baseUrl.href);
