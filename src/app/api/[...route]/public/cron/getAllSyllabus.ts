@@ -29,39 +29,22 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
   const syllabusData = $('tbody tr')
     .toArray()
     .reduce<CreateCourseDto[]>((acc, row) => {
-      const courseName = $(row)
-        .find('td[data-th="授業科目名 / Course Name"] .data_content')
-        .text()
-        .trim();
+      const cells = $(row).children('td');
+
+      const courseName = cells.eq(2).text().trim();
       if (courseName === '') return acc;
 
-      const semesterRaw = $(row)
-        .find('td[data-th="開講学期 / Semester"] .data_content')
-        .text()
-        .trim();
-      const instructors = $(row)
-        .find('td[data-th="教員名 / Instructor"] .item_text')
+      const semesterRaw = cells.eq(1).text().trim();
+      const instructors = cells
+        .eq(3)
+        .find('.item_text')
         .map((_, elem) => $(elem).text().trim())
         .get();
-      const dayAndPeriodRaw = $(row)
-        .find('td[data-th="曜日・時限 / Day of the week, period"] .data_content')
-        .text()
-        .trim();
-      const typeOfConductionRaw = $(row)
-        .find('td[data-th="実施形態 / Type of Conduction"] .data_content')
-        .text()
-        .trim();
-      const yearOfStudyRaw = $(row)
-        .find('td[data-th="対象年次 / Year of Study"] .data_content')
-        .text()
-        .trim();
-      const languageOptionsRaw = $(row)
-        .find('td[data-th="主たる使用言語 / Language options"] .data_content')
-        .text()
-        .trim();
-      const syllabusLinkRaw = $(row)
-        .find('td[data-th="シラバス表示 / Syllabus"] input[onclick]')
-        .attr('onclick');
+      const dayAndPeriodRaw = cells.eq(4).text().trim();
+      const typeOfConductionRaw = cells.eq(5).text().trim();
+      const yearOfStudyRaw = cells.eq(6).text().trim();
+      const languageOptionsRaw = cells.eq(7).text().trim();
+      const syllabusLinkRaw = cells.eq(9).find('input[onclick]').attr('onclick');
 
       const semester = parseSemester(semesterRaw);
       const [day, period] = parseDayAndPeriod(dayAndPeriodRaw);
