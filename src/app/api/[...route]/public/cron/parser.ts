@@ -29,6 +29,19 @@ export const parseSemester = (text: string): Semester => {
 };
 
 /**
+ * 指定されたテキストから日本語部分を抽出して返します。
+ *
+ * @param text - 解析するテキスト。
+ * @returns 日本語の文字列。見つからない場合は空の文字列を返します。
+ */
+const japaneseRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\s]+/g;
+export const parseInstructors = (text: string): string => {
+  const matches = text.match(japaneseRegex);
+
+  return matches ? matches[0].trim() : '';
+};
+
+/**
  * 曜日と時限のテキストからそれぞれの値を抽出する関数
  *
  * 入力例: '金,３限Fri,3rd'

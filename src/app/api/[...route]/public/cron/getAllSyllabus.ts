@@ -3,6 +3,7 @@ import { load } from 'cheerio';
 import {
   assembleSyllabusLink,
   parseDayAndPeriod,
+  parseInstructors,
   parseLanguageOptions,
   parseSemester,
   parseTypeOfConduction,
@@ -38,7 +39,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
       const instructors = cells
         .eq(3)
         .find('.item_text')
-        .map((_, elem) => $(elem).text().trim())
+        .map((_, elem) => parseInstructors($(elem).text().trim()))
         .get();
       const dayAndPeriodRaw = cells.eq(4).text().trim();
       const typeOfConductionRaw = cells.eq(5).text().trim();
