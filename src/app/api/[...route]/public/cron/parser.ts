@@ -34,8 +34,8 @@ export const parseSemester = (text: string): Semester => {
  * @param text - 解析するテキスト。
  * @returns 日本語の文字列。見つからない場合は空の文字列を返します。
  */
-const japaneseRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\s]+/g;
 export const parseInstructors = (text: string): string => {
+  const japaneseRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\s]+/g;
   const matches = text.match(japaneseRegex);
 
   return matches ? matches[0].trim() : '';
@@ -50,9 +50,10 @@ export const parseInstructors = (text: string): string => {
  * @param {string} text - 日本語と英語で書かれた曜日と時限の情報
  * @returns {[Day | null, Period | null]} - 曜日と時限を配列で返す [day, period]
  */
-const dayPattern = /[月火水木金土日]/;
-const periodPattern = /(\d+)/;
 export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => {
+  const dayPattern = /[月火水木金土日]/;
+  const periodPattern = /(\d+)/;
+
   const dayMatch = dayPattern.exec(text);
   const periodMatch = periodPattern.exec(text);
 
@@ -71,8 +72,9 @@ export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => 
  * @param {string} text - 実施形態のテキスト
  * @returns {TypeOfConduction} - 実施形態の日本語部分
  */
-const typeOfConductionPattern = /^[\u3000-\u9FFF\u3040-\u30FF（）ー]+/;
 export const parseTypeOfConduction = (text: string): TypeOfConduction | null => {
+  const typeOfConductionPattern = /^[\u3000-\u9FFF\u3040-\u30FF（）ー]+/;
+
   const match = typeOfConductionPattern.exec(text);
   const japanese = match ? match[0] : null;
   const typeOfConduction = typeOfConductionSchema.safeParse(japanese);
@@ -88,8 +90,9 @@ export const parseTypeOfConduction = (text: string): TypeOfConduction | null => 
  * @param {string} text - 範囲を表す年次のテキスト
  * @returns {{ startYear: number; endYear: number } | null} - 開始年次と終了年次のオブジェクト、もしくは範囲が不正な場合は null
  */
-const yearOfStudyPattern = /(\d+)(?:〜(\d+))?/;
 export const parseYearOfStudy = (text: string): { startYear: number; endYear: number } | null => {
+  const yearOfStudyPattern = /(\d+)(?:〜(\d+))?/;
+
   const match = yearOfStudyPattern.exec(text);
 
   if (match) {
@@ -128,8 +131,9 @@ export const parseLanguageOptions = (text: string): LanguageOptions => {
  * @param {string | undefined} rawData - 正規表現で解析する元データ
  * @returns {string | null} - シラバスのリンクをstringで、もしくは解析できなかった場合は null
  */
-const syllabusLinkPattern = /showSbs\('(\d+)',\s*'(\d+)',\s*'(\w+)',\s*'(\w+)'\)/;
 export const assembleSyllabusLink = (rawData: string | undefined): string | null => {
+  const syllabusLinkPattern = /showSbs\('(\d+)',\s*'(\d+)',\s*'(\w+)',\s*'(\w+)'\)/;
+
   if (!rawData) return null;
   const match = syllabusLinkPattern.exec(rawData);
   if (match) {
