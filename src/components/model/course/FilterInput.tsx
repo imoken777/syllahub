@@ -10,7 +10,7 @@ import {
 import { TimeTablePicker } from '@/components/ui/TimeTablePicker';
 import { semesterOptions, typeOfConductionOptions } from '@/constants/searchOptions';
 import type { SearchOptions } from '@/types/searchOptions';
-import { groupNameSchema, semesterSchema, typeOfConductionSchema } from '@/types/searchOptions';
+import { semesterSchema, typeOfConductionSchema } from '@/types/searchOptions';
 import type { FC } from 'react';
 
 type Props = {
@@ -50,7 +50,7 @@ export const FilterInput: FC<Props> = ({
       value={searchOptionsState.groupName ?? ''}
       onValueChange={(value) =>
         setSearchOptions({
-          groupName: value === 'all' ? undefined : groupNameSchema.safeParse(value).data,
+          groupName: value === 'all' ? undefined : value,
         })
       }
     >
