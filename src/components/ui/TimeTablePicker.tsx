@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/Button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { dayOptions, periodOptions } from '@/constants/searchOptions';
-import { cn } from '@/lib/utils';
 import type { Day, Period } from '@/types/searchOptions';
+import { cn } from '@/utils/cn';
 import { CalendarIcon } from 'lucide-react';
 import type { FC } from 'react';
 import { Fragment } from 'react';
