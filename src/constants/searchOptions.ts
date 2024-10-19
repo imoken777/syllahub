@@ -1,4 +1,5 @@
 export const semesterOptions = ['春学期', '秋学期'] as const;
+export const targetYearOptions = [1, 2, 3, 4] as const;
 export const typeOfConductionOptions = [
   '対面',
   '非対面（同時双方向）',
