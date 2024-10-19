@@ -17,7 +17,10 @@ export const CourseItem = ({ course }: { course: CourseModel }) => (
           <Badge variant="outline">{course.groupName}</Badge>
           <Badge variant="outline">{course.languageOptions}</Badge>
           <Badge variant="outline">{course.typeOfConduction}</Badge>
-          <Badge variant="outline">{`${course.yearOfStudy?.startYear}-${course.yearOfStudy?.endYear}年次`}</Badge>
+          <Badge variant="outline">
+            {course.targetYear &&
+              `${Math.min(...course.targetYear)}~${Math.max(...course.targetYear)}年次`}
+          </Badge>
         </div>
         <div className="flex items-center space-x-2">
           <a href={course.syllabusLink ?? ''}>
