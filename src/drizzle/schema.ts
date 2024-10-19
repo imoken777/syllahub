@@ -5,6 +5,7 @@ import {
   semesterOptions,
   typeOfConductionOptions,
 } from '@/constants/searchOptions';
+import type { TargetYearOptions } from '@/types/searchOptions';
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
@@ -17,9 +18,7 @@ export const courses = sqliteTable('courses', {
   instructors: text('instructors', { mode: 'json' }).$type<string[]>().notNull(),
   languageOptions: text('languageOptions', { enum: languageOptions }).notNull(),
   typeOfConduction: text('typeOfConduction', { enum: typeOfConductionOptions }),
-  yearOfStudy: text('yearOfStudy', { mode: 'json' })
-    .$type<{ startYear: number; endYear: number }>()
-    .default(sql`null`),
+  targetYear: text('targetYear', { mode: 'json' }).$type<TargetYearOptions>(),
   syllabusLink: text('syllabusLink').default(sql`null`),
   day: text('day', { enum: dayOptions }),
   period: text('period', { enum: periodOptions }),

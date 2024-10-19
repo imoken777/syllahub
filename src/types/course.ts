@@ -1,4 +1,11 @@
-import type { Day, LanguageOptions, Period, Semester, TypeOfConduction } from './searchOptions';
+import type {
+  Day,
+  LanguageOptions,
+  Period,
+  Semester,
+  TargetYearOptions,
+  TypeOfConduction,
+} from './searchOptions';
 
 export type CreateCourseDto = {
   courseName: string;
@@ -7,10 +14,7 @@ export type CreateCourseDto = {
   instructors: string[];
   languageOptions: LanguageOptions;
   typeOfConduction: TypeOfConduction | null;
-  yearOfStudy: {
-    startYear: number;
-    endYear: number;
-  } | null;
+  targetYear: TargetYearOptions | null;
   //   syllabusLink: URL | null;
   syllabusLink: string | null;
   day: Day | null;
