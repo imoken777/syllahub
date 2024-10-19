@@ -6,8 +6,8 @@ import {
   parseInstructors,
   parseLanguageOptions,
   parseSemester,
+  parseTargetYear,
   parseTypeOfConduction,
-  parseYearOfStudy,
 } from './parser';
 
 const fetchSyllabusHtml = async (url: URL) =>
@@ -43,14 +43,14 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
         .get();
       const dayAndPeriodRaw = cells.eq(4).text().trim();
       const typeOfConductionRaw = cells.eq(5).text().trim();
-      const yearOfStudyRaw = cells.eq(6).text().trim();
+      const targetYearRaw = cells.eq(6).text().trim();
       const languageOptionsRaw = cells.eq(7).text().trim();
       const syllabusLinkRaw = cells.eq(9).find('input[onclick]').attr('onclick');
 
       const semester = parseSemester(semesterRaw);
       const [day, period] = parseDayAndPeriod(dayAndPeriodRaw);
       const typeOfConduction = parseTypeOfConduction(typeOfConductionRaw);
-      const yearOfStudy = parseYearOfStudy(yearOfStudyRaw);
+      const targetYear = parseTargetYear(targetYearRaw);
       const languageOptions = parseLanguageOptions(languageOptionsRaw);
       const syllabusLink = assembleSyllabusLink(syllabusLinkRaw);
 
@@ -64,7 +64,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
           day,
           period,
           typeOfConduction,
-          yearOfStudy,
+          targetYear,
           languageOptions,
           syllabusLink,
         },

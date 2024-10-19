@@ -3,6 +3,7 @@ import type {
   LanguageOptions,
   Period,
   Semester,
+  TargetYearOptions,
   TypeOfConduction,
 } from '@/types/searchOptions';
 import {
@@ -10,6 +11,7 @@ import {
   languageOptionsSchema,
   periodSchema,
   semesterSchema,
+  targetYearOptionsSchema,
   typeOfConductionSchema,
 } from '@/types/searchOptions';
 
@@ -85,12 +87,12 @@ export const parseTypeOfConduction = (text: string): TypeOfConduction | null => 
  * 対象年次の範囲を解析する関数
  *
  * 入力例: '1〜4'
- * 出力例: { startYear: 1, endYear: 4 }
+ * 出力例: [1, 2, 3, 4]
  *
  * @param {string} text - 範囲を表す年次のテキスト
- * @returns {{ startYear: number; endYear: number } | null} - 開始年次と終了年次のオブジェクト、もしくは範囲が不正な場合は null
+ * @returns {TargetYearOptions | null} - 対象年次の範囲, もしくは解析できなかった場合は null
  */
-export const parseYearOfStudy = (text: string): { startYear: number; endYear: number } | null => {
+export const parseTargetYear = (text: string): TargetYearOptions | null => {
   const yearOfStudyPattern = /(\d+)(?:〜(\d+))?/;
 
   const match = yearOfStudyPattern.exec(text);
@@ -99,10 +101,10 @@ export const parseYearOfStudy = (text: string): { startYear: number; endYear: nu
     const startYear = parseInt(match[1], 10);
     const endYear = match[2] ? parseInt(match[2], 10) : startYear; // 範囲がない場合はstartYearと同じにする
 
-    return {
-      startYear,
-      endYear,
-    };
+    const yearsArray = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+
+    const targetYear = targetYearOptionsSchema.safeParse(yearsArray);
+    return targetYear.success ? targetYear.data : null;
   }
   return null;
 };
