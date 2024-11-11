@@ -1,5 +1,6 @@
 'use client';
 
+import { Checkbox } from '@/components/ui/Checkbox';
 import {
   Select,
   SelectContent,
@@ -8,9 +9,14 @@ import {
   SelectValue,
 } from '@/components/ui/Select';
 import { TimeTablePicker } from '@/components/ui/TimeTablePicker';
-import { semesterOptions, typeOfConductionOptions } from '@/constants/searchOptions';
+import {
+  semesterOptions,
+  targetYearOptions,
+  typeOfConductionOptions,
+} from '@/constants/searchOptions';
 import type { SearchOptions } from '@/types/searchOptions';
 import { semesterSchema, typeOfConductionSchema } from '@/types/searchOptions';
+
 import type { FC } from 'react';
 
 type Props = {
@@ -45,6 +51,28 @@ export const FilterInput: FC<Props> = ({
         ))}
       </SelectContent>
     </Select>
+
+    <div className="flex flex-wrap gap-4">
+      <span className="font-medium">対象学年：</span>
+      {targetYearOptions.map((grade) => (
+        <label key={grade} className="flex items-center space-x-2" htmlFor={`checkbox-${grade}`}>
+          <Checkbox
+            id={`checkbox-${grade}`}
+            checked={searchOptionsState.targetYear?.includes(grade) ?? false}
+            onCheckedChange={(checked) =>
+              setSearchOptions({
+                targetYear: checked
+                  ? searchOptionsState.targetYear
+                    ? [...searchOptionsState.targetYear, grade]
+                    : [grade]
+                  : searchOptionsState.targetYear?.filter((year) => year !== grade),
+              })
+            }
+          />
+          <span>{grade}年生</span>
+        </label>
+      ))}
+    </div>
 
     <Select
       value={searchOptionsState.groupName ?? ''}

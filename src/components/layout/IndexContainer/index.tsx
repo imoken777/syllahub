@@ -13,6 +13,9 @@ export const IndexContainer = ({ courses }: { courses: CourseModel[] }) => {
       courses.filter(
         (course) =>
           (!currentSearchOptions.semester || course.semester === currentSearchOptions.semester) &&
+          (!currentSearchOptions.targetYear ||
+            currentSearchOptions.targetYear.length === 0 ||
+            currentSearchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
           (!currentSearchOptions.typeOfConduction ||
             course.typeOfConduction === currentSearchOptions.typeOfConduction) &&
           (!currentSearchOptions.day || course.day === currentSearchOptions.day) &&
