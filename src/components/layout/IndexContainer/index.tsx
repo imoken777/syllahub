@@ -32,7 +32,7 @@ export const IndexContainer = ({ courses }: { courses: CourseModel[] }) => {
   );
 
   return (
-    <div>
+    <div className="container mx-auto">
       <FilterInput
         searchOptionsState={currentSearchOptions}
         setSearchOptions={setSearchOptions}
