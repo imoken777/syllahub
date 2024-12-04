@@ -73,12 +73,12 @@ export const TimeTablePicker: FC<Props> = ({
         <Button
           variant={'outline'}
           className={cn(
-            'w-[180px] justify-start text-left font-normal',
+            'w-full justify-start text-left font-normal',
             isBlankSelection && 'text-muted-foreground',
           )}
         >
           <CalendarIcon className="mr-2 size-4" />
-          <span>{selectedLabel}</span>
+          <span className="text-black">{selectedLabel}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-4">
