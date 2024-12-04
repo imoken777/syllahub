@@ -9,10 +9,6 @@ const Home = async () => {
   const courseData: CourseModel[] = await db.select().from(courses).all();
   if (courseData.length === 0) return <div>データがありません</div>;
 
-  return (
-    <main>
-      <IndexContainer courses={courseData} />
-    </main>
-  );
+  return <IndexContainer courses={courseData} />;
 };
 export default Home;
