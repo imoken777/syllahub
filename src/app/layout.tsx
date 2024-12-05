@@ -7,7 +7,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 const title = 'SiilaHub';
-const description = 'INIADのシラバスを簡単に検索できる非公式サイト';
+const description = 'INIADシラバス検索非公式サイト';
 
 export const metadata: Metadata = {
   title,
