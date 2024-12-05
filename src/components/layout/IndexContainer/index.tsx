@@ -1,6 +1,7 @@
 'use client';
 
 import { CourseList } from '@/components/model/course/CourseList';
+import { EmptyResult } from '@/components/model/course/EmptyResult';
 import { FilterInput } from '@/components/model/course/FilterInput';
 import type { CourseModel } from '@/types/course';
 import { useMemo } from 'react';
@@ -38,7 +39,7 @@ export const IndexContainer = ({ courses }: { courses: CourseModel[] }) => {
         setSearchOptions={setSearchOptions}
         groupNameOptions={allGroupNames}
       />
-      <CourseList courses={filteredCourses} />
+      {filteredCourses.length === 0 ? <EmptyResult /> : <CourseList courses={filteredCourses} />}
     </div>
   );
 };

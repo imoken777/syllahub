@@ -20,9 +20,9 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => (
   <html lang="en">
-    <body className={inter.className}>
+    <body className={`${inter.className} flex min-h-screen flex-col`}>
       <Header title={title} description={description} />
-      <main>{children}</main>
+      <main className="grow">{children}</main>
       <Footer title={title} description={description} />
     </body>
   </html>
