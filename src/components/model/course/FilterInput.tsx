@@ -29,8 +29,8 @@ export const FilterInput: FC<Props> = ({
   setSearchOptions,
   groupNameOptions,
 }) => (
-  <div className="mx-auto flex w-full max-w-xl flex-col space-y-5 p-4">
-    <div className="grid grid-cols-2 justify-between gap-3">
+  <div className="mx-auto p-4">
+    <div className="mx-auto grid w-fit grid-cols-2 gap-2 sm:grid-cols-3">
       <div className="space-y-2">
         <Select
           value={searchOptionsState.semester ?? ''}
@@ -76,36 +76,7 @@ export const FilterInput: FC<Props> = ({
           </SelectContent>
         </Select>
       </div>
-    </div>
 
-    <div className="w-full">
-      <div className="flex h-10 w-fit items-center gap-8 rounded-md border border-input bg-background px-3 py-2 ring-offset-background">
-        {targetYearOptions.map((grade) => (
-          <label
-            key={grade}
-            className="flex cursor-pointer select-none items-center gap-1"
-            htmlFor={`checkbox-${grade}`}
-          >
-            <Checkbox
-              id={`checkbox-${grade}`}
-              checked={searchOptionsState.targetYear?.includes(grade) ?? false}
-              onCheckedChange={(checked) =>
-                setSearchOptions({
-                  targetYear: checked
-                    ? searchOptionsState.targetYear
-                      ? [...searchOptionsState.targetYear, grade]
-                      : [grade]
-                    : searchOptionsState.targetYear?.filter((year) => year !== grade),
-                })
-              }
-            />
-            <span className="text-sm">{grade}年生</span>
-          </label>
-        ))}
-      </div>
-    </div>
-
-    <div className="grid grid-cols-2 gap-3">
       <div className="space-y-2">
         <Select
           value={searchOptionsState.typeOfConduction ?? ''}
@@ -138,6 +109,33 @@ export const FilterInput: FC<Props> = ({
             setDayChange={(day) => setSearchOptions({ day: day })}
             setPeriodChange={(period) => setSearchOptions({ period: period })}
           />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex h-10 w-fit items-center gap-8 rounded-md border border-input bg-background px-3 py-2 ring-offset-background">
+          {targetYearOptions.map((grade) => (
+            <label
+              key={grade}
+              className="flex cursor-pointer select-none items-center gap-1 whitespace-nowrap"
+              htmlFor={`checkbox-${grade}`}
+            >
+              <Checkbox
+                id={`checkbox-${grade}`}
+                checked={searchOptionsState.targetYear?.includes(grade) ?? false}
+                onCheckedChange={(checked) =>
+                  setSearchOptions({
+                    targetYear: checked
+                      ? searchOptionsState.targetYear
+                        ? [...searchOptionsState.targetYear, grade]
+                        : [grade]
+                      : searchOptionsState.targetYear?.filter((year) => year !== grade),
+                  })
+                }
+              />
+              <span className="text-sm">{grade}年生</span>
+            </label>
+          ))}
         </div>
       </div>
     </div>
