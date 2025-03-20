@@ -23,12 +23,14 @@ export const CourseItem = ({ course }: { course: CourseModel }) => (
           </Badge>
         </div>
         <div className="flex items-center space-x-2">
-          <a href={course.syllabusLink ?? ''}>
-            <Button variant="outline" size="sm" className="flex items-center space-x-1">
-              <span>シラバス</span>
-              <ExternalLink className="size-4" />
-            </Button>
-          </a>
+          {course.syllabusLink && (
+            <a href={course.syllabusLink}>
+              <Button variant="outline" size="sm" className="flex items-center space-x-1">
+                <span>シラバス</span>
+                <ExternalLink className="size-4" />
+              </Button>
+            </a>
+          )}
         </div>
       </div>
     </div>
