@@ -75,9 +75,11 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
 };
 
 export const getAllSyllabus = async (): Promise<CreateCourseDto[]> => {
-  // https://g-sys.toyo.ac.jp/syllabus/category/19621 から 29 ページ分のシラバスを取得
-  const startPageId = 19621;
-  const pageIds = Array.from({ length: 29 }, (_, i) => startPageId + i);
+  // https://g-sys.toyo.ac.jp/syllabus/category/19846 から 最終ページまでのシラバスを取得
+  const startPageId = 19846;
+  const endPageId = 19870;
+  const pageRange = endPageId - startPageId + 1;
+  const pageIds = Array.from({ length: pageRange }, (_, i) => startPageId + i);
   const urls = pageIds.map((id) => new URL(`https://g-sys.toyo.ac.jp/syllabus/category/${id}`));
 
   const syllabusHtmls = await Promise.all(urls.map(fetchSyllabusHtml));
