@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { publicFactory } from '../factory';
 import { getAllSyllabus } from './getAllSyllabus';
 
-export const cronRouter = publicFactory.createApp().put('/', async (c) => {
+export const updateSyllabusRouter = publicFactory.createApp().put('/', async (c) => {
   const data = await getAllSyllabus();
   try {
     await db.delete(courses);
