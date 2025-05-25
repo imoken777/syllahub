@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1725901281836,
-      "tag": "0000_stiff_whistler",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1726315018827,
-      "tag": "0001_curly_shinobi_shaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1726317099764,
-      "tag": "0002_useful_tattoo",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1726318163401,
-      "tag": "0003_clever_paper_doll",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1727959925998,
-      "tag": "0004_brave_ulik",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1729264397212,
-      "tag": "0005_romantic_the_call",
+      "when": 1748194576806,
+      "tag": "0000_curious_natasha_romanoff",
       "breakpoints": true
     }
   ]

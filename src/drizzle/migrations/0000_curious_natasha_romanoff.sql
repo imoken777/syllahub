@@ -3,13 +3,11 @@ CREATE TABLE `courses` (
 	`courseName` text NOT NULL,
 	`semester` text NOT NULL,
 	`groupName` text NOT NULL,
-	`instructors` text DEFAULT (json_array()) NOT NULL,
+	`instructors` text NOT NULL,
 	`languageOptions` text NOT NULL,
-	`typeOfConduction` text NOT NULL,
-	`yearOfStudy` text DEFAULT null,
+	`typeOfConduction` text,
+	`targetYear` text,
 	`syllabusLink` text DEFAULT null,
 	`day` text,
 	`period` text
 );
---> statement-breakpoint
-DROP TABLE `users`;
