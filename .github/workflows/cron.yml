@@ -1,0 +1,66 @@
+name: Syllabus Update Cron
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # 毎日JST: 0時 (UTC: 15時)に実行
+  workflow_dispatch:
+
+jobs:
+  update-syllabus:
+    runs-on: ubuntu-latest
+    env:
+      REQUEST_URL: 'https://syllahub.pages.dev/api/updateSyllabus'
+
+    steps:
+      - name: Show execution time
+        run: |
+          echo "🕒 Cron job started at:"
+          echo "UTC: $(date -u)"
+          echo "JST: $(TZ='Asia/Tokyo' date)"
+      - name: Validate and prepare credentials
+        env:
+          CRON_USERNAME: ${{ secrets.CRON_USERNAME }}
+          CRON_PASSWORD: ${{ secrets.CRON_PASSWORD }}
+        run: |
+          set -e
+          echo "🔍 Validating credentials..."
+
+          if [ -z "$CRON_USERNAME" ] || [ -z "$CRON_PASSWORD" ]; then
+            echo "❌ Error: Missing credentials"
+            exit 1
+          fi
+
+          AUTH_HEADER="Authorization: Basic $(echo -n "$CRON_USERNAME:$CRON_PASSWORD" | base64)"
+          echo "::add-mask::$AUTH_HEADER"
+
+          echo "AUTH_HEADER=$AUTH_HEADER" >> $GITHUB_ENV
+          echo "✅ Credentials validated and masked"
+
+      - name: Execute API call
+        run: |
+          echo "🎓 Starting syllabus site update..."
+          echo "🚀 Making PUT request to: $REQUEST_URL"
+
+          if RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X PUT \
+            -H "$AUTH_HEADER" \
+            -H "Content-Type: application/json" \
+            "$REQUEST_URL" 2>&1); then
+
+            HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+            RESPONSE_BODY=$(echo "$RESPONSE" | head -n -1)
+
+            echo "📊 HTTP Status: $HTTP_STATUS"
+
+            if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+              echo "🎉 Syllabus data updated successfully!"
+              echo "📝 Response: $RESPONSE_BODY"
+            else
+              echo "❌ Syllabus update failed with status: $HTTP_STATUS"
+              echo "📝 Error response: $RESPONSE_BODY"
+              exit 1
+            fi
+          else
+            echo "❌ Failed to connect to syllabus API"
+            exit 1
+          fi
