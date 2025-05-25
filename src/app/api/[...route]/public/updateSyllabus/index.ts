@@ -1,10 +1,11 @@
 import { courses } from '@/drizzle/schema';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 import { publicFactory } from '../factory';
 import { getAllSyllabus } from './getAllSyllabus';
 
 export const updateSyllabusRouter = publicFactory.createApp().put('/', async (c) => {
   const data = await getAllSyllabus();
+  const db = getDb();
   try {
     await db.transaction(async (tx) => {
       await tx.delete(courses);
