@@ -6,8 +6,8 @@ pages_build_output_dir = ".vercel/output/static"
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "sillahub-db"
-database_id = "0e647384-94ec-4e58-9ced-f424ebbd203c"
+database_name = "syllahub-db"
+database_id = "a4d9d8d8-c6eb-43d4-b53f-7fbc1af36f73"
 preview_database_id = "DB"
 
 migrations_dir = "src/drizzle/migrations"
