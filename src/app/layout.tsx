@@ -7,15 +7,15 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  metadataBase: new URL('https://sillahub.pages.dev/'),
+  metadataBase: new URL('https://syllahub.pages.dev/'),
   openGraph: {
-    title: 'SillaHub',
+    title: 'SyllaHub',
     description: 'INIADシラバス検索非公式サイト',
     locale: 'ja_JP',
     type: 'website',
     images: [
       {
-        url: '/sillahub-logo.png',
+        url: '/syllahub-logo.png',
         width: 1200,
         height: 630,
       },
@@ -23,7 +23,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SillaHub',
+    title: 'SyllaHub',
     description: 'INIADシラバス検索非公式サイト',
   },
 } as const satisfies Metadata;

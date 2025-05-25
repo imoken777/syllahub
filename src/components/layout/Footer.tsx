@@ -13,7 +13,7 @@ export const Footer = ({ title, description }: { title: string; description: str
       </div>
       <div className="flex space-x-4">
         <a
-          href="https://github.com/imoken777/sillahub"
+          href="https://github.com/imoken777/syllahub"
           target="_blank"
           rel="noopener noreferrer"
           className="text-gray-600 hover:text-gray-900"
