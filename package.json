@@ -17,9 +17,13 @@
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.7",
     "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",
@@ -27,6 +31,7 @@
     "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "drizzle-orm": "^0.33.0",
     "drizzle-zod": "^0.5.1",
     "hono": "^4.5.11",
