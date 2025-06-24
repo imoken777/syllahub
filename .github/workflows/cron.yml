@@ -55,6 +55,10 @@ jobs:
             if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
               echo "🎉 Syllabus data updated successfully!"
               echo "📝 Response: $RESPONSE_BODY"
+              COUNT=$(echo "$RESPONSE_BODY" | jq -r '.count // empty')
+              if [ -n "$COUNT" ]; then
+                echo "📦 Updated syllabus count: $COUNT"
+              fi
             else
               echo "❌ Syllabus update failed with status: $HTTP_STATUS"
               echo "📝 Error response: $RESPONSE_BODY"

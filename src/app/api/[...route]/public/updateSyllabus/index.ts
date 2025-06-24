@@ -4,15 +4,21 @@ import { publicFactory } from '../factory';
 import { getAllSyllabus } from './getAllSyllabus';
 
 export const updateSyllabusRouter = publicFactory.createApp().put('/', async (c) => {
-  const data = await getAllSyllabus();
-  const db = getDb();
   try {
+    const data = await getAllSyllabus();
+    if (data.length === 0) {
+      throw new Error('No syllabus data found to update');
+    }
+
+    const db = getDb();
     await db.transaction(async (tx) => {
       await tx.delete(courses);
       await tx.insert(courses).values(data);
     });
-    return c.json('OK', 200);
-  } catch (e) {
-    return c.json({ error: e }, 500);
+
+    return c.json({ status: 'success', message: 'Syllabus updated', count: data.length }, 200);
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : `Unexpected error: ${String(e)}`;
+    return c.json({ status: 'error', message: errorMessage }, 500);
   }
 });
