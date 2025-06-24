@@ -6,7 +6,7 @@ import type { CourseModel } from '@/types/course';
 export const runtime = 'edge';
 
 const Home = async () => {
-  const db = getDb();
+  const db = await getDb();
   const courseData: CourseModel[] = await db.select().from(courses).all();
   if (courseData.length === 0) return <div>データがありません</div>;
 

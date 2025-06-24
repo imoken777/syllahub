@@ -10,7 +10,7 @@ export const updateSyllabusRouter = publicFactory.createApp().put('/', async (c)
       throw new Error('No syllabus data found to update');
     }
 
-    const db = getDb();
+    const db = await getDb();
     await db.transaction(async (tx) => {
       await tx.delete(courses);
       await tx.insert(courses).values(data);
