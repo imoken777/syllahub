@@ -6,6 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "check": "run-p check:*",
     "check-ci": "run-p \"check:!(tsc)\"",
     "check:eslint": "next lint --max-warnings=0",
@@ -14,16 +18,14 @@
     "fix": "run-s fix:{eslint,prettier}",
     "fix:eslint": "next lint --fix",
     "fix:prettier": "prettier --cache --write .",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev",
-    "deploy": "npm run pages:build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@libsql/client": "^0.15.7",
+    "@libsql/isomorphic-ws": "^0.1.5",
+    "@opennextjs/cloudflare": "^1.3.1",
     "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",
@@ -44,7 +46,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.2",
     "@cloudflare/workers-types": "^4.20240903.0",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -53,7 +54,6 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.9",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-next-on-pages": "^1.13.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "eslint-plugin-unused-imports": "^4.1.3",
@@ -66,6 +66,6 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.5",
     "vercel": "^37.4.0",
-    "wrangler": "^3.75.0"
+    "wrangler": "^4.21.0"
   }
 }
