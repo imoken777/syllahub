@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 const NotFound = () => (
   <>
     <title>404: This page could not be found.</title>
