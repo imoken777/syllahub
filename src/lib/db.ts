@@ -33,7 +33,13 @@ const getEnvVariables = async (): Promise<{
   };
 };
 
+let cachedDb: ReturnType<typeof drizzle> | null = null;
+
 export const getDb = async () => {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
   const env = await getEnvVariables();
 
   if (!env.TURSO_DATABASE_URL || !env.TURSO_AUTH_TOKEN) {
@@ -45,5 +51,6 @@ export const getDb = async () => {
     authToken: env.TURSO_AUTH_TOKEN,
   });
 
-  return drizzle(turso);
+  cachedDb = drizzle(turso);
+  return cachedDb;
 };
