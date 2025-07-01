@@ -1,6 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "syllahub"
-main = ".open-next/worker.js"
+# main = ".open-next/worker.js"
+main = "src/workers/custom-worker.ts"
 compatibility_date = "2024-09-24"
 compatibility_flags = ["nodejs_compat"]
 
