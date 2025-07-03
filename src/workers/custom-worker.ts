@@ -10,7 +10,7 @@ const scheduled: ExportedHandlerScheduledHandler<CloudflareEnv> = async (control
   ctx.waitUntil(
     updateSyllabusService(db)
       // eslint-disable-next-line no-console
-      .then((res) => console.log('Syllabus update completed:', res))
+      .then((res) => console.log('Syllabus update completed:', res.count))
       .catch((err) => console.error('Error during syllabus update:', err)),
   );
 };
