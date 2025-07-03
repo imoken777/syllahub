@@ -1,4 +1,5 @@
 import type { CreateCourseDto } from '@/types/course';
+import { runWithConcurrencyLimit } from '@/utils/runWithConcurrencyLimit';
 import { load } from 'cheerio';
 import {
   assembleSyllabusLink,
@@ -10,8 +11,15 @@ import {
   parseTypeOfConduction,
 } from './parser';
 
-const fetchSyllabusHtml = async (url: URL) =>
-  await fetch(url.toString())
+const fetchSyllabusHtml = async (url: URL) => {
+  const headers = {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+    Connection: 'keep-alive',
+  };
+  return await fetch(url.toString(), { headers })
     .then((response) =>
       response.ok
         ? response.text()
@@ -20,6 +28,7 @@ const fetchSyllabusHtml = async (url: URL) =>
     .catch((error: unknown) => {
       throw new Error(`Failed to fetch: ${url.toString()} - ${error}`);
     });
+};
 
 const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
   const $ = load(html);
@@ -82,8 +91,17 @@ export const getAllSyllabus = async (): Promise<CreateCourseDto[]> => {
   const pageIds = Array.from({ length: pageRange }, (_, i) => startPageId + i);
   const urls = pageIds.map((id) => new URL(`https://g-sys.toyo.ac.jp/syllabus/category/${id}`));
 
-  const syllabusHtmls = await Promise.all(urls.map(fetchSyllabusHtml));
-  const syllabusData = await Promise.all(syllabusHtmls.map((html) => scrapeSyllabus(html)));
+  const fetchTasks = urls.map((url) => () => fetchSyllabusHtml(url));
+  const fetchResults = await runWithConcurrencyLimit(fetchTasks, 6);
+
+  const successfulHtmls = fetchResults.filter((r) => r.status === 'fulfilled').map((r) => r.value);
+  fetchResults.forEach((r, i) => {
+    if (r.status === 'rejected') {
+      console.error(`Fetch failed for ${urls[i]}:`, r.reason);
+    }
+  });
+
+  const syllabusData = await Promise.all(successfulHtmls.map((html) => scrapeSyllabus(html)));
 
   return syllabusData.flat();
 };
