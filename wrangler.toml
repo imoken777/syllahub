@@ -2,7 +2,7 @@
 name = "syllahub"
 # main = ".open-next/worker.js"
 main = "src/workers/custom-worker.ts"
-compatibility_date = "2024-09-24"
+compatibility_date = "2025-07-13"
 compatibility_flags = ["nodejs_compat"]
 
 [assets]
