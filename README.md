@@ -94,6 +94,7 @@ cp .env.example .dev.vars
 TURSO_DATABASE_URL=your_turso_database_url
 TURSO_AUTH_TOKEN=your_turso_auth_token
 NEXTJS_ENV=development
+APP_ORIGIN_URL=http://localhost:3000
 ```
 
 ### 開発サーバーの起動
