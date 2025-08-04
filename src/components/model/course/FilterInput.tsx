@@ -31,8 +31,8 @@ export const FilterInput: FC<Props> = ({
   groupNameOptions,
 }) => (
   <div className="mx-auto p-4">
-    <div className="mx-auto grid w-fit grid-cols-2 gap-2 sm:grid-cols-3">
-      <div className="space-y-2">
+    <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-4">
+      <div className="min-w-48 max-w-64 flex-1 basis-48">
         <Select
           value={searchOptionsState.semester ?? ''}
           onValueChange={(value) =>
@@ -41,7 +41,7 @@ export const FilterInput: FC<Props> = ({
             })
           }
         >
-          <SelectTrigger className="w-full max-w-[220px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="学期を選択" />
           </SelectTrigger>
           <SelectContent>
@@ -55,7 +55,7 @@ export const FilterInput: FC<Props> = ({
         </Select>
       </div>
 
-      <div className="space-y-2">
+      <div className="min-w-48 max-w-64 flex-1 basis-48">
         <MultiSelect
           options={groupNameOptions.map((groupName) => ({
             value: groupName,
@@ -71,7 +71,7 @@ export const FilterInput: FC<Props> = ({
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="min-w-48 max-w-64 flex-1 basis-48">
         <Select
           value={searchOptionsState.typeOfConduction ?? ''}
           onValueChange={(value) =>
@@ -81,7 +81,7 @@ export const FilterInput: FC<Props> = ({
             })
           }
         >
-          <SelectTrigger className="w-full max-w-[220px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="授業形態を選択" />
           </SelectTrigger>
           <SelectContent>
@@ -95,19 +95,17 @@ export const FilterInput: FC<Props> = ({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <div className="w-full max-w-[220px]">
-          <TimeTablePicker
-            dayState={searchOptionsState.day}
-            periodState={searchOptionsState.period}
-            setDayChange={(day) => setSearchOptions({ day: day })}
-            setPeriodChange={(period) => setSearchOptions({ period: period })}
-          />
-        </div>
+      <div className="min-w-48 max-w-64 flex-1 basis-48">
+        <TimeTablePicker
+          dayState={searchOptionsState.day}
+          periodState={searchOptionsState.period}
+          setDayChange={(day) => setSearchOptions({ day: day })}
+          setPeriodChange={(period) => setSearchOptions({ period: period })}
+        />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex h-10 w-fit items-center gap-8 rounded-md border border-input bg-background px-3 py-2 ring-offset-background">
+      <div className="min-w-60 max-w-80 flex-1 basis-60">
+        <div className="flex h-10 w-full items-center gap-4 rounded-md border border-input bg-background px-3 py-2 ring-offset-background">
           {targetYearOptions.map((grade) => (
             <label
               key={grade}
