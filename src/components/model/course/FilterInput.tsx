@@ -1,6 +1,7 @@
 'use client';
 
 import { Checkbox } from '@/components/ui/Checkbox';
+import { MultiSelect } from '@/components/ui/MultiSelect';
 import {
   Select,
   SelectContent,
@@ -55,26 +56,19 @@ export const FilterInput: FC<Props> = ({
       </div>
 
       <div className="space-y-2">
-        <Select
-          value={searchOptionsState.groupName ?? ''}
-          onValueChange={(value) =>
+        <MultiSelect
+          options={groupNameOptions.map((groupName) => ({
+            value: groupName,
+            label: groupName,
+          }))}
+          value={searchOptionsState.groupName ?? []}
+          onChange={(value) =>
             setSearchOptions({
-              groupName: value === 'all' ? undefined : value,
+              groupName: value.length > 0 ? value : undefined,
             })
           }
-        >
-          <SelectTrigger className="w-full max-w-[220px]">
-            <SelectValue placeholder="グループを選択" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全て</SelectItem>
-            {groupNameOptions.map((groupName) => (
-              <SelectItem key={groupName} value={groupName}>
-                {groupName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          placeholder="グループを選択"
+        />
       </div>
 
       <div className="space-y-2">

@@ -23,7 +23,9 @@ export const IndexContainer = ({ courses }: { courses: CourseModel[] }) => {
           (!currentSearchOptions.period || course.period === currentSearchOptions.period) &&
           (!currentSearchOptions.languageOptions ||
             course.languageOptions === currentSearchOptions.languageOptions) &&
-          (!currentSearchOptions.groupName || course.groupName === currentSearchOptions.groupName),
+          (!currentSearchOptions.groupName ||
+            course.groupName.length === 0 ||
+            currentSearchOptions.groupName.some((group) => course.groupName.includes(group))),
       ),
     [courses, currentSearchOptions],
   );

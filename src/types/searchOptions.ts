@@ -33,7 +33,7 @@ export const searchOptionsSchema = z.object({
   day: z.optional(daySchema),
   period: z.optional(periodSchema),
   languageOptions: z.optional(languageOptionsSchema),
-  groupName: z.optional(z.string()),
+  groupName: z.optional(z.array(z.string())),
   yearOfStudy: z.optional(z.number()),
 });
 export type SearchOptions = z.infer<typeof searchOptionsSchema>;
