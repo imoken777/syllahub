@@ -73,7 +73,6 @@
 
   body {
     @apply bg-background text-foreground;
-    transform: translateZ(0);
     backface-visibility: hidden;
     overflow-x: hidden;
   }
