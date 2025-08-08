@@ -1,4 +1,4 @@
-import { IndexContainer } from '@/components/layout/IndexContainer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { EmptyResult } from '@/components/model/course/EmptyResult';
 import { courses } from '@/drizzle/schema';
 import { getDb } from '@/lib/db';
@@ -22,7 +22,7 @@ const Home = async () => {
   const courseData = await getCachedCourseData();
   if (courseData.length === 0) return <EmptyResult />;
 
-  return <IndexContainer courses={courseData} />;
+  return <MainLayout courses={courseData} />;
 };
 
 export default Home;
