@@ -1,5 +1,6 @@
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
+import { TimetableProvider } from '@/contexts/TimetableContext';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -67,9 +68,11 @@ const RootLayout = ({
       <link rel="dns-prefetch" href={siteInfo.url} />
     </head>
     <body className={`${inter.className} flex min-h-screen flex-col`}>
-      <Header title={siteInfo.title} description={siteInfo.description} />
-      <main className="grow">{children}</main>
-      <Footer title={siteInfo.title} description={siteInfo.description} />
+      <TimetableProvider>
+        <Header title={siteInfo.title} description={siteInfo.description} />
+        <main className="grow">{children}</main>
+        <Footer title={siteInfo.title} description={siteInfo.description} />
+      </TimetableProvider>
     </body>
   </html>
 );
