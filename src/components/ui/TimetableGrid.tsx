@@ -78,6 +78,7 @@ const TimetableCell = ({
                 item.onRemove?.();
               }}
               aria-label="Remove item"
+              data-remove-button
             >
               <X className="size-3" />
             </Button>
