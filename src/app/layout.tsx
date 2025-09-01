@@ -24,8 +24,6 @@ const inter = Inter({
 
 export const metadata = {
   metadataBase: new URL(siteInfo.url),
-  title: siteInfo.title,
-  description: siteInfo.description,
   keywords: ['INIAD', 'シラバス', '検索', '東洋大学', '情報連携学部', '授業', '時間割'],
   authors: [{ name: 'imoken777', url: 'https://github.com/imoken777' }],
   robots: 'index, follow',

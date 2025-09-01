@@ -19,6 +19,8 @@ export const generateMetadata = async ({
   }
 
   return {
+    title: siteInfo.title,
+    description: siteInfo.description,
     openGraph: {
       title: siteInfo.title,
       description: siteInfo.description,
