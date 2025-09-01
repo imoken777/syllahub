@@ -11,7 +11,7 @@ const config = {
     'prettier',
     'plugin:tailwindcss/recommended',
   ],
-  plugins: ['tailwindcss', 'unused-imports'],
+  plugins: ['tailwindcss', 'unused-imports', 'neverthrow'],
   settings: {
     tailwindcss: {
       callees: ['cn'],
@@ -35,6 +35,8 @@ const config = {
         },
       },
       rules: {
+        'neverthrow/must-use-result': 'error',
+
         // Any型の使用を禁止
         '@typescript-eslint/no-explicit-any': 'error',
         // 返り値の省略を許容
