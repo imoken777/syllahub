@@ -4,6 +4,7 @@ import { TimetableProvider } from '@/contexts/TimetableContext';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { siteInfo } from './siteInfo';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,12 +21,6 @@ const inter = Inter({
     'sans-serif',
   ],
 });
-
-const siteInfo = {
-  title: 'SyllaHub',
-  description: 'INIADシラバス検索非公式サイト',
-  url: 'https://syllahub.imoken27.workers.dev/',
-} as const;
 
 export const metadata = {
   metadataBase: new URL(siteInfo.url),
