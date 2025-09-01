@@ -29,26 +29,6 @@ export const metadata = {
   keywords: ['INIAD', 'シラバス', '検索', '東洋大学', '情報連携学部', '授業', '時間割'],
   authors: [{ name: 'imoken777', url: 'https://github.com/imoken777' }],
   robots: 'index, follow',
-  openGraph: {
-    title: siteInfo.title,
-    description: siteInfo.description,
-    locale: 'ja_JP',
-    type: 'website',
-    siteName: siteInfo.title,
-    images: [
-      {
-        url: '/syllahub-logo.png',
-        width: 1200,
-        height: 630,
-        alt: 'SyllaHub ロゴ',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteInfo.title,
-    description: siteInfo.description,
-  },
 } as const satisfies Metadata;
 
 const RootLayout = ({
