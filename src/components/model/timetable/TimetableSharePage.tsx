@@ -8,6 +8,8 @@ import type { Semester } from '@/types/searchOptions';
 import { downloadFile } from '@/utils/downloadFile';
 import { generateElementImage } from '@/utils/elementImageGenerator';
 import { ArrowLeft, Download, ExternalLinkIcon, ImageIcon } from 'lucide-react';
+import type { Result } from 'neverthrow';
+import { err, ok } from 'neverthrow';
 import { useCallback, useRef, useState } from 'react';
 import { convertCoursesToTimetableItems } from './utils/convertCoursesToTimetableItems';
 import {
@@ -41,7 +43,7 @@ export const TimetableSharePage = ({
 
   const timetableItems = convertCoursesToTimetableItems(courses);
 
-  const getTimetableContainer = useCallback((): HTMLElement => {
+  const getTimetableContainer = useCallback((): Result<HTMLElement, string> => {
     let container: Element | null = null;
 
     if (timetableRef.current) {
@@ -60,14 +62,14 @@ export const TimetableSharePage = ({
     }
 
     if (!container) {
-      throw new Error('時間割のグリッド要素が見つかりません。');
+      return err('時間割のグリッド要素が見つかりません。');
     }
 
     if (!(container instanceof HTMLElement)) {
-      throw new Error('取得した要素がHTMLElementではありません。');
+      return err('取得した要素がHTMLElementではありません。');
     }
 
-    return container;
+    return ok(container);
   }, [containerSelector]);
 
   const handleSaveImage = async () => {
@@ -78,21 +80,31 @@ export const TimetableSharePage = ({
 
     setImageGenerationState('generating');
 
-    try {
-      window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
 
-      const timetableContainer = getTimetableContainer();
+    const timetableContainerResult = getTimetableContainer();
 
-      const blob = await generateElementImage(timetableContainer, ['data-remove-button']);
-      const filename = generateTimetableImageFilename(semester);
-      downloadFile(blob, filename);
+    timetableContainerResult.match(
+      async (timetableContainer) => {
+        const imageResult = await generateElementImage(timetableContainer, ['data-remove-button']);
 
-      setImageGenerationState('completed');
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '画像の生成に失敗しました。';
-      alert(errorMessage);
-      setImageGenerationState('idle');
-    }
+        imageResult.match(
+          (blob) => {
+            const filename = generateTimetableImageFilename(semester);
+            downloadFile(blob, filename);
+            setImageGenerationState('completed');
+          },
+          (error) => {
+            alert(error);
+            setImageGenerationState('idle');
+          },
+        );
+      },
+      (error) => {
+        alert(error);
+        setImageGenerationState('idle');
+      },
+    );
   };
 
   const handleTwitterShare = () => {
