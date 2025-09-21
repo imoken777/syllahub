@@ -43,7 +43,7 @@ export const MainLayout = ({ courses }: Props) => {
   );
 
   return (
-    <div className="mx-auto w-full">
+    <main className="mx-auto w-full">
       {/* モバイル表示 */}
       <div className="lg:hidden">
         <div className="space-y-2 py-4">
@@ -52,11 +52,13 @@ export const MainLayout = ({ courses }: Props) => {
             setSearchOptions={setSearchOptions}
             groupNameOptions={allGroupNames}
           />
-          {filteredCourses.length === 0 ? (
-            <EmptyResult />
-          ) : (
-            <CourseList courses={filteredCourses} />
-          )}
+          <section>
+            {filteredCourses.length === 0 ? (
+              <EmptyResult />
+            ) : (
+              <CourseList courses={filteredCourses} />
+            )}
+          </section>
         </div>
         <FloatingTimetableButton />
       </div>
@@ -70,21 +72,21 @@ export const MainLayout = ({ courses }: Props) => {
             groupNameOptions={allGroupNames}
           />
 
-          <div>
+          <section>
             {filteredCourses.length === 0 ? (
               <EmptyResult />
             ) : (
               <CourseList courses={filteredCourses} />
             )}
-          </div>
+          </section>
         </div>
 
-        <div className="col-span-4">
+        <aside className="col-span-4">
           <div className="sticky top-6 rounded-lg border bg-white shadow-lg">
             <TimetableDisplay variant="sidebar" />
           </div>
-        </div>
+        </aside>
       </div>
-    </div>
+    </main>
   );
 };

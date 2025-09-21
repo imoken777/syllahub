@@ -30,7 +30,7 @@ export const FilterInput: FC<Props> = ({
   setSearchOptions,
   groupNameOptions,
 }) => (
-  <div className="mx-auto p-4">
+  <search className="mx-auto p-4" aria-label="講義検索・フィルター">
     <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-4">
       <div className="min-w-48 max-w-64 flex-1 basis-48">
         <Select
@@ -131,5 +131,5 @@ export const FilterInput: FC<Props> = ({
         </div>
       </div>
     </div>
-  </div>
+  </search>
 );

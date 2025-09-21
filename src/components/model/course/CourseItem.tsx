@@ -24,7 +24,7 @@ export const CourseItem = ({ course }: Props) => {
   };
 
   return (
-    <div className="rounded-lg border-2 border-solid border-gray-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <article className="rounded-lg border-2 border-solid border-gray-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className="flex items-start justify-between">
         <div className="flex-1 pr-4">
           <h2 className="mb-2 text-lg font-semibold">{course.courseName}</h2>
@@ -98,6 +98,6 @@ export const CourseItem = ({ course }: Props) => {
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 };
