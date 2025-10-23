@@ -8,7 +8,7 @@ import {
 import type { TargetYearOptions } from '@/types/searchOptions';
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-valibot';
 
 export const courses = sqliteTable('courses', {
   courseId: integer('courseId').primaryKey(),
