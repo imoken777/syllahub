@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 import {
   daySchema,
   languageOptionsSchema,
@@ -8,22 +8,24 @@ import {
   typeOfConductionSchema,
 } from './searchOptions';
 
-export const createCourseDtoSchema = z.object({
-  courseName: z.string(),
+export const createCourseDtoSchema = v.object({
+  courseName: v.string(),
   semester: semesterSchema,
-  groupName: z.string(),
-  instructors: z.array(z.string()),
+  groupName: v.string(),
+  instructors: v.array(v.string()),
   languageOptions: languageOptionsSchema,
-  typeOfConduction: typeOfConductionSchema.nullable(),
-  targetYear: targetYearOptionsSchema.nullable(),
-  syllabusLink: z.string().nullable(),
-  day: daySchema.nullable(),
-  period: periodSchema.nullable(),
+  typeOfConduction: v.nullable(typeOfConductionSchema),
+  targetYear: v.nullable(targetYearOptionsSchema),
+  syllabusLink: v.nullable(v.string()),
+  day: v.nullable(daySchema),
+  period: v.nullable(periodSchema),
 });
 
-export const courseModelSchema = createCourseDtoSchema.extend({
-  courseId: z.number(),
+export const courseModelSchema = v.object({
+  ...createCourseDtoSchema.entries,
+
+  courseId: v.number(),
 });
 
-export type CreateCourseDto = z.infer<typeof createCourseDtoSchema>;
-export type CourseModel = z.infer<typeof courseModelSchema>;
+export type CreateCourseDto = v.InferOutput<typeof createCourseDtoSchema>;
+export type CourseModel = v.InferOutput<typeof courseModelSchema>;

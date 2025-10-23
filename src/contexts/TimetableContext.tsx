@@ -5,12 +5,12 @@ import { courseModelSchema } from '@/types/course';
 import type { Semester } from '@/types/searchOptions';
 import { getFromStorage, saveToStorage } from '@/utils/localStorage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { z } from 'zod';
+import * as v from 'valibot';
 
 const SPRING_TIMETABLE_STORAGE_KEY = 'spring-timetable';
 const FALL_TIMETABLE_STORAGE_KEY = 'fall-timetable';
 
-const courseModelArraySchema = z.array(courseModelSchema);
+const courseModelArraySchema = v.array(courseModelSchema);
 
 type CourseStatus =
   | {

@@ -1,17 +1,17 @@
 import type { Result } from 'neverthrow';
 import { err, ok } from 'neverthrow';
-import type { z } from 'zod';
+import * as v from 'valibot';
 
 /**
- * localStorageから値を取得してパースし、Zodスキーマで検証する関数
+ * localStorageから値を取得してパースし、valibotスキーマで検証する関数
  * @param key - localStorageのキー
- * @param schema - 検証に使用するZodスキーマ
+ * @param schema - 検証に使用するvalibotスキーマ
  * @returns 検証済みの値、またはエラー
  */
-export const getFromStorage = <T extends z.ZodType>(
+export const getFromStorage = <T extends v.GenericSchema>(
   key: string,
   schema: T,
-): Result<z.infer<T>, string> => {
+): Result<v.InferOutput<T>, string> => {
   if (typeof window === 'undefined') {
     return err('localStorage is not available on the server');
   }
@@ -23,16 +23,14 @@ export const getFromStorage = <T extends z.ZodType>(
 
   try {
     const parsed = JSON.parse(stored);
-    const validated = schema.safeParse(parsed);
+    const validated = v.safeParse(schema, parsed);
 
     if (!validated.success) {
-      const errors = validated.error.errors
-        .map((e) => `${e.path.join('.')}: ${e.message}`)
-        .join(', ');
+      const errors = validated.issues;
       return err(`Failed to validate ${key}: ${errors}`);
     }
 
-    return ok(validated.data);
+    return ok(validated.output);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to parse JSON';
     return err(`Failed to parse ${key}: ${message}`);
@@ -40,13 +38,13 @@ export const getFromStorage = <T extends z.ZodType>(
 };
 
 /**
- * localStorageに値を保存する純粋関数（Zodスキーマで検証）
+ * localStorageに値を保存する関数（valibotスキーマで検証）
  * @param key - localStorageのキー
  * @param value - 保存する値
- * @param schema - 検証に使用するZodスキーマ
+ * @param schema - 検証に使用するvalibotスキーマ
  * @returns 成功した場合はvoid、失敗した場合はエラーメッセージ
  */
-export const saveToStorage = <T extends z.ZodTypeAny>(
+export const saveToStorage = <T extends v.GenericSchema>(
   key: string,
   value: unknown,
   schema: T,
@@ -56,16 +54,14 @@ export const saveToStorage = <T extends z.ZodTypeAny>(
   }
 
   try {
-    // 保存前にZodスキーマで検証
-    const validated = schema.safeParse(value);
+    // 保存前にvalibotスキーマで検証
+    const validated = v.safeParse(schema, value);
     if (!validated.success) {
-      const errors = validated.error.errors
-        .map((e) => `${e.path.join('.')}: ${e.message}`)
-        .join(', ');
+      const errors = validated.issues;
       return err(`Failed to validate ${key}: ${errors}`);
     }
 
-    const serialized = JSON.stringify(validated.data);
+    const serialized = JSON.stringify(validated.output);
     localStorage.setItem(key, serialized);
     return ok(undefined);
   } catch (error) {
@@ -75,7 +71,7 @@ export const saveToStorage = <T extends z.ZodTypeAny>(
 };
 
 /**
- * localStorageから値を削除する純粋関数
+ * localStorageから値を削除する関数
  * @param key - localStorageのキー
  * @returns 成功した場合はvoid、失敗した場合はエラーメッセージ
  */

@@ -17,6 +17,7 @@ import {
 } from '@/constants/searchOptions';
 import type { SearchOptions } from '@/types/searchOptions';
 import { semesterSchema, typeOfConductionSchema } from '@/types/searchOptions';
+import * as v from 'valibot';
 
 import type { FC } from 'react';
 
@@ -37,7 +38,7 @@ export const FilterInput: FC<Props> = ({
           value={searchOptionsState.semester ?? ''}
           onValueChange={(value) =>
             setSearchOptions({
-              semester: value === 'all' ? undefined : semesterSchema.safeParse(value).data,
+              semester: value !== 'all' && v.is(semesterSchema, value) ? value : undefined,
             })
           }
         >
@@ -77,7 +78,7 @@ export const FilterInput: FC<Props> = ({
           onValueChange={(value) =>
             setSearchOptions({
               typeOfConduction:
-                value === 'all' ? undefined : typeOfConductionSchema.safeParse(value).data,
+                value === 'all' && v.is(typeOfConductionSchema, value) ? value : undefined,
             })
           }
         >

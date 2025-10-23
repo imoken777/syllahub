@@ -16,6 +16,7 @@ import { semesterSchema } from '@/types/searchOptions';
 import { cn } from '@/utils/cn';
 import { Share2Icon } from 'lucide-react';
 import { useState } from 'react';
+import * as v from 'valibot';
 import { TimetableSharePage } from './TimetableSharePage';
 import { convertCoursesToTimetableItems } from './utils/convertCoursesToTimetableItems';
 
@@ -126,7 +127,7 @@ export const TimetableDisplay = ({ variant }: Props) => {
         <Select
           value={selectedSemester ?? 'all'}
           onValueChange={(value) => {
-            const newSemester = value === 'all' ? null : semesterSchema.parse(value);
+            const newSemester = value === 'all' ? null : v.parse(semesterSchema, value);
             setSelectedSemester(newSemester);
           }}
         >

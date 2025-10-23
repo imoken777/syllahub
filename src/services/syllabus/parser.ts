@@ -14,6 +14,7 @@ import {
   targetYearOptionsSchema,
   typeOfConductionSchema,
 } from '@/types/searchOptions';
+import * as v from 'valibot';
 
 /**
  * 学期のテキストから日本語部分を抽出する関数
@@ -26,7 +27,7 @@ import {
  */
 export const parseSemester = (text: string): Semester => {
   const japanese = text.replace(/[A-Za-z]/g, '');
-  const semester = semesterSchema.parse(japanese);
+  const semester = v.parse(semesterSchema, japanese);
   return semester;
 };
 
@@ -59,10 +60,10 @@ export const parseDayAndPeriod = (text: string): [Day | null, Period | null] => 
   const dayMatch = dayPattern.exec(text);
   const periodMatch = periodPattern.exec(text);
 
-  const day = daySchema.safeParse(dayMatch?.[0]);
-  const period = periodSchema.safeParse(`${periodMatch?.[1]}限`);
+  const day = v.safeParse(daySchema, dayMatch?.[0]);
+  const period = v.safeParse(periodSchema, `${periodMatch?.[1]}限`);
 
-  return [day.data ?? null, period.data ?? null];
+  return [day.success ? day.output : null, period.success ? period.output : null];
 };
 
 /**
@@ -79,8 +80,8 @@ export const parseTypeOfConduction = (text: string): TypeOfConduction | null => 
 
   const match = typeOfConductionPattern.exec(text);
   const japanese = match ? match[0] : null;
-  const typeOfConduction = typeOfConductionSchema.safeParse(japanese);
-  return typeOfConduction.success ? typeOfConduction.data : null;
+  const typeOfConduction = v.safeParse(typeOfConductionSchema, japanese);
+  return typeOfConduction.success ? typeOfConduction.output : null;
 };
 
 /**
@@ -103,8 +104,8 @@ export const parseTargetYear = (text: string): TargetYearOptions | null => {
 
     const yearsArray = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
 
-    const targetYear = targetYearOptionsSchema.safeParse(yearsArray);
-    return targetYear.success ? targetYear.data : null;
+    const targetYear = v.safeParse(targetYearOptionsSchema, yearsArray);
+    return targetYear.success ? targetYear.output : null;
   }
   return null;
 };
@@ -120,7 +121,7 @@ export const parseTargetYear = (text: string): TargetYearOptions | null => {
  */
 export const parseLanguageOptions = (text: string): LanguageOptions => {
   const japanese = text.split(/ /)[0].split('/')[0].trim();
-  const languageOptions = languageOptionsSchema.parse(japanese);
+  const languageOptions = v.parse(languageOptionsSchema, japanese);
   return languageOptions;
 };
 
