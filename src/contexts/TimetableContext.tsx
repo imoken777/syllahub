@@ -1,11 +1,16 @@
 'use client';
 
 import type { CourseModel } from '@/types/course';
+import { courseModelSchema } from '@/types/course';
 import type { Semester } from '@/types/searchOptions';
+import { getFromStorage, saveToStorage } from '@/utils/localStorage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { z } from 'zod';
 
 const SPRING_TIMETABLE_STORAGE_KEY = 'spring-timetable';
 const FALL_TIMETABLE_STORAGE_KEY = 'fall-timetable';
+
+const courseModelArraySchema = z.array(courseModelSchema);
 
 type CourseStatus =
   | {
@@ -51,26 +56,22 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
     if (!isClient) return;
 
     // 春学期の時間割データの読み込み
-    const storedSpring = localStorage.getItem(SPRING_TIMETABLE_STORAGE_KEY);
-    if (storedSpring) {
-      try {
-        const parsed: CourseModel[] = JSON.parse(storedSpring);
-        setSpringTimetable(parsed);
-      } catch (e) {
-        console.error('Failed to parse spring timetable from localStorage:', e);
-      }
-    }
+    const storedSpringResult = getFromStorage(SPRING_TIMETABLE_STORAGE_KEY, courseModelArraySchema);
+    storedSpringResult.match(
+      (parsed) => setSpringTimetable(parsed),
+      (error) => {
+        console.error('Failed to parse spring timetable from localStorage:', error);
+      },
+    );
 
     // 秋学期の時間割データの読み込み
-    const storedFall = localStorage.getItem(FALL_TIMETABLE_STORAGE_KEY);
-    if (storedFall) {
-      try {
-        const parsed: CourseModel[] = JSON.parse(storedFall);
-        setFallTimetable(parsed);
-      } catch (e) {
-        console.error('Failed to parse fall timetable from localStorage:', e);
-      }
-    }
+    const storedFallResult = getFromStorage(FALL_TIMETABLE_STORAGE_KEY, courseModelArraySchema);
+    storedFallResult.match(
+      (parsed) => setFallTimetable(parsed),
+      (error) => {
+        console.error('Failed to parse fall timetable from localStorage:', error);
+      },
+    );
   }, [isClient]);
 
   // 全時間割（春学期 + 秋学期）
@@ -98,13 +99,27 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
       if (semester === '春学期') {
         setSpringTimetable((prev) => {
           const newTimetable = updater(prev);
-          localStorage.setItem(SPRING_TIMETABLE_STORAGE_KEY, JSON.stringify(newTimetable));
+          saveToStorage(SPRING_TIMETABLE_STORAGE_KEY, newTimetable, courseModelArraySchema).match(
+            () => {
+              // 保存成功
+            },
+            (error) => {
+              console.error('Failed to save spring timetable to localStorage:', error);
+            },
+          );
           return newTimetable;
         });
       } else if (semester === '秋学期') {
         setFallTimetable((prev) => {
           const newTimetable = updater(prev);
-          localStorage.setItem(FALL_TIMETABLE_STORAGE_KEY, JSON.stringify(newTimetable));
+          saveToStorage(FALL_TIMETABLE_STORAGE_KEY, newTimetable, courseModelArraySchema).match(
+            () => {
+              // 保存成功
+            },
+            (error) => {
+              console.error('Failed to save fall timetable to localStorage:', error);
+            },
+          );
           return newTimetable;
         });
       }
