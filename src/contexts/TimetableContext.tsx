@@ -6,7 +6,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 const SPRING_TIMETABLE_STORAGE_KEY = 'spring-timetable';
 const FALL_TIMETABLE_STORAGE_KEY = 'fall-timetable';
-const SELECTED_SEMESTER_STORAGE_KEY = 'selected-semester';
 
 type CourseStatus =
   | {
@@ -26,7 +25,6 @@ type TimetableContextValue = {
   filteredTimetable: CourseModel[]; // 選択された学期でフィルタリングされた時間割
   selectedSemester: Semester | null;
   setSelectedSemester: (semester: Semester | null) => void;
-  syncWithSearchFilter: (searchSemester: Semester | undefined) => void; // 検索フィルタとの連携用
   getCourseStatus: (course: CourseModel) => CourseStatus;
   addCourseToTimetable: (course: CourseModel) => boolean; // 成功/失敗を返す
   removeCourseFromTimetable: (course: CourseModel) => boolean; // 成功/失敗を返す
@@ -52,30 +50,6 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
   useEffect(() => {
     if (!isClient) return;
 
-    // 旧形式のデータ移行処理
-    const oldTimetableData = localStorage.getItem('my-timetable');
-    if (oldTimetableData) {
-      try {
-        const parsed: CourseModel[] = JSON.parse(oldTimetableData);
-        const springCourses = parsed.filter((c) => c.semester === '春学期');
-        const fallCourses = parsed.filter((c) => c.semester === '秋学期');
-
-        if (springCourses.length > 0) {
-          setSpringTimetable(springCourses);
-          localStorage.setItem(SPRING_TIMETABLE_STORAGE_KEY, JSON.stringify(springCourses));
-        }
-        if (fallCourses.length > 0) {
-          setFallTimetable(fallCourses);
-          localStorage.setItem(FALL_TIMETABLE_STORAGE_KEY, JSON.stringify(fallCourses));
-        }
-
-        // 移行完了後、旧データを削除
-        localStorage.removeItem('my-timetable');
-      } catch (e) {
-        console.error('Failed to migrate old timetable data:', e);
-      }
-    }
-
     // 春学期の時間割データの読み込み
     const storedSpring = localStorage.getItem(SPRING_TIMETABLE_STORAGE_KEY);
     if (storedSpring) {
@@ -95,17 +69,6 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
         setFallTimetable(parsed);
       } catch (e) {
         console.error('Failed to parse fall timetable from localStorage:', e);
-      }
-    }
-
-    // 選択された学期の読み込み
-    const storedSemester = localStorage.getItem(SELECTED_SEMESTER_STORAGE_KEY);
-    if (storedSemester) {
-      try {
-        const parsed = JSON.parse(storedSemester);
-        setSelectedSemester(parsed);
-      } catch (e) {
-        console.error('Failed to parse selected semester from localStorage:', e);
       }
     }
   }, [isClient]);
@@ -149,16 +112,10 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
     [isClient],
   );
 
-  // 選択された学期を更新してローカルストレージに保存
   const updateSelectedSemester = useCallback(
     (semester: Semester | null) => {
       if (!isClient) return;
       setSelectedSemester(semester);
-      if (semester) {
-        localStorage.setItem(SELECTED_SEMESTER_STORAGE_KEY, JSON.stringify(semester));
-      } else {
-        localStorage.removeItem(SELECTED_SEMESTER_STORAGE_KEY);
-      }
     },
     [isClient],
   );
@@ -170,17 +127,6 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
         ? timetable.filter((course: CourseModel) => course.semester === selectedSemester)
         : timetable,
     [selectedSemester, timetable],
-  );
-
-  // 検索フィルタとの連携機能
-  const syncWithSearchFilter = useCallback(
-    (searchSemester: Semester | undefined) => {
-      // 検索フィルタで学期が選択された場合は、時間割の表示もその学期に合わせる
-      if (searchSemester && searchSemester !== selectedSemester) {
-        updateSelectedSemester(searchSemester);
-      }
-    },
-    [selectedSemester, updateSelectedSemester],
   );
 
   const addCourseToTimetable = useCallback(
@@ -279,7 +225,6 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
     filteredTimetable,
     selectedSemester,
     setSelectedSemester: updateSelectedSemester,
-    syncWithSearchFilter,
     getCourseStatus,
     addCourseToTimetable,
     removeCourseFromTimetable,
