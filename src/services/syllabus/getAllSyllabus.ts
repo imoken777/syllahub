@@ -1,6 +1,8 @@
 import type { CreateCourseDto } from '@/types/course';
 import { runWithConcurrencyLimit } from '@/utils/runWithConcurrencyLimit';
 import { load } from 'cheerio';
+import type { Result } from 'neverthrow';
+import { err, ok } from 'neverthrow';
 import {
   assembleSyllabusLink,
   parseDayAndPeriod,
@@ -11,7 +13,7 @@ import {
   parseTypeOfConduction,
 } from './parser';
 
-const fetchSyllabusHtml = async (url: URL) => {
+const fetchSyllabusHtml = async (url: URL): Promise<Result<string, string>> => {
   const headers = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -19,15 +21,18 @@ const fetchSyllabusHtml = async (url: URL) => {
     'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
     Connection: 'keep-alive',
   };
-  return await fetch(url.toString(), { headers })
-    .then((response) =>
-      response.ok
-        ? response.text()
-        : Promise.reject(`Failed to fetch: ${url.toString()} - ${response.statusText}`),
-    )
-    .catch((error: unknown) => {
-      throw new Error(`Failed to fetch: ${url.toString()} - ${error}`);
-    });
+
+  try {
+    const response = await fetch(url.toString(), { headers });
+    if (!response.ok) {
+      return err(`Failed to fetch: ${url.toString()} - ${response.statusText}`);
+    }
+    const text = await response.text();
+    return ok(text);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return err(`Failed to fetch: ${url.toString()} - ${message}`);
+  }
 };
 
 const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
@@ -83,7 +88,7 @@ const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
   return syllabusData;
 };
 
-export const getAllSyllabus = async (): Promise<CreateCourseDto[]> => {
+export const getAllSyllabus = async (): Promise<Result<CreateCourseDto[], string>> => {
   // https://g-sys.toyo.ac.jp/syllabus/category/19846 から 最終ページまでのシラバスを取得
   const startPageId = 19846;
   const endPageId = 19870;
@@ -94,14 +99,23 @@ export const getAllSyllabus = async (): Promise<CreateCourseDto[]> => {
   const fetchTasks = urls.map((url) => () => fetchSyllabusHtml(url));
   const fetchResults = await runWithConcurrencyLimit(fetchTasks, 6);
 
-  const successfulHtmls = fetchResults.filter((r) => r.status === 'fulfilled').map((r) => r.value);
-  fetchResults.forEach((r, i) => {
-    if (r.status === 'rejected') {
-      console.error(`Fetch failed for ${urls[i]}:`, r.reason);
-    }
-  });
+  const successfulHtmls = fetchResults
+    .map((result, i) =>
+      result.match(
+        (html) => html,
+        (error) => {
+          console.error(`Fetch failed for ${urls[i]}:`, error);
+          return null;
+        },
+      ),
+    )
+    .filter((html): html is string => html !== null);
 
-  const syllabusData = await Promise.all(successfulHtmls.map((html) => scrapeSyllabus(html)));
-
-  return syllabusData.flat();
+  try {
+    const syllabusData = await Promise.all(successfulHtmls.map((html) => scrapeSyllabus(html)));
+    return ok(syllabusData.flat());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return err(`Failed to process syllabus data: ${message}`);
+  }
 };
