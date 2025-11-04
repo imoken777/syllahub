@@ -1,34 +1,38 @@
+import type { Result } from 'neverthrow';
+import { err } from 'neverthrow';
+
 /**
- * 最大同時実行数で非同期タスクを順次実行し、各タスクの結果（成功・失敗）を返すconcurrency limiter。
+ * 最大同時実行数で非同期タスクを順次実行し、各タスクの結果（成功・失敗）を返す concurrency limiter。
  *
- * @template T
- * @param {(() => Promise<T>)[]} tasks - 実行する非同期タスク（Promiseを返す関数）の配列
- * @param {number} maxConcurrency - 最大同時実行数
- * @returns {Promise<({ status: 'fulfilled'; value: T } | { status: 'rejected'; reason: unknown })[]>}
- *   各タスクの実行結果（成功: { status: 'fulfilled', value }, 失敗: { status: 'rejected', reason }）の配列
+ * @template T - 成功時の値の型
+ * @param tasks - 実行する非同期タスク（Resultを返すPromiseを返す関数）の配列
+ * @param maxConcurrency - 最大同時実行数
+ * @returns 各タスクの実行結果の配列
  */
 export const runWithConcurrencyLimit = async <T>(
-  tasks: (() => Promise<T>)[],
+  tasks: (() => Promise<Result<T, string>>)[],
   maxConcurrency: number,
-): Promise<({ status: 'fulfilled'; value: T } | { status: 'rejected'; reason: unknown })[]> => {
-  const results = new Array(tasks.length);
-  let currentIndex = 0;
+): Promise<Result<T, string>[]> => {
+  if (tasks.length === 0) return [];
 
-  const runners = Array(Math.min(maxConcurrency, tasks.length))
-    .fill(null)
-    .map(() =>
-      (async () => {
-        while (currentIndex < tasks.length) {
-          const taskIndex = currentIndex++;
-          try {
-            const value = await tasks[taskIndex]();
-            results[taskIndex] = { status: 'fulfilled', value };
-          } catch (reason) {
-            results[taskIndex] = { status: 'rejected', reason };
-          }
-        }
-      })(),
-    );
+  const results: Result<T, string>[] = new Array(tasks.length);
+  let taskIndex = 0;
 
-  return Promise.all(runners).then(() => results);
+  const worker = async (): Promise<void> => {
+    while (taskIndex < tasks.length) {
+      const currentIndex = taskIndex++;
+      const task = tasks[currentIndex];
+
+      const result = await task().catch((error): Result<T, string> => {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return err(errorMessage);
+      });
+
+      results[currentIndex] = result;
+    }
+  };
+
+  await Promise.all(new Array(Math.min(maxConcurrency, tasks.length)).fill(0).map(() => worker()));
+
+  return results;
 };
