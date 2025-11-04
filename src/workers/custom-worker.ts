@@ -1,5 +1,6 @@
 import { getDb } from '@/lib/db';
 import { updateSyllabusService } from '@/services/syllabus';
+import { revalidateTag } from 'next/cache';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore `.open-next/worker.ts` is generated at build time
@@ -11,6 +12,7 @@ const scheduled: ExportedHandlerScheduledHandler<CloudflareEnv> = async (control
     updateSyllabusService(db).then((result) => {
       result.match(
         (res) => {
+          revalidateTag('courses');
           // eslint-disable-next-line no-console
           console.log('Syllabus update completed:', res.count);
         },
