@@ -5,7 +5,6 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 initOpenNextCloudflareForDev();
 
 const nextConfig = {
-  serverExternalPackages: ['@libsql/isomorphic-ws'],
   swcMinify: true,
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-select', '@radix-ui/react-popover'],
