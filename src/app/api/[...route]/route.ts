@@ -1,13 +1,11 @@
-// import { publicFactory } from './public/factory';
-// import { updateSyllabusRouter } from './public/updateSyllabus';
+import { handle } from 'hono/vercel';
+import { publicFactory } from './public/factory';
+import { revalidateCoursesRouter } from './public/revalidateCourses';
 
-// const basePath = '/api';
+const basePath = '/api';
 
-// const publicApp = publicFactory.createApp().basePath(basePath);
-// const publicRoutes = publicApp.route('/updateSyllabus', updateSyllabusRouter);
-// export const PUT = handle(publicRoutes);
+const publicApp = publicFactory.createApp().basePath(basePath);
+const publicRoutes = publicApp.route('/revalidateCourses', revalidateCoursesRouter);
 
-// 仮
-export async function PUT() {
-  return new Response('This API is disabled', { status: 404 });
-}
+export const PUT = handle(publicRoutes);
+export type ApiType = typeof publicRoutes;
