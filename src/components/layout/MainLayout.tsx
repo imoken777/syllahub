@@ -14,27 +14,27 @@ type Props = {
 };
 
 export const MainLayout = ({ courses }: Props) => {
-  const { currentSearchOptions, setSearchOptions } = useSearchOptions();
+  const { searchOptions, updateSearchOptions } = useSearchOptions();
 
   const filteredCourses = useMemo(
     () =>
       courses.filter(
         (course) =>
-          (!currentSearchOptions.semester || course.semester === currentSearchOptions.semester) &&
-          (!currentSearchOptions.targetYear ||
-            currentSearchOptions.targetYear.length === 0 ||
-            currentSearchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
-          (!currentSearchOptions.typeOfConduction ||
-            course.typeOfConduction === currentSearchOptions.typeOfConduction) &&
-          (!currentSearchOptions.day || course.day === currentSearchOptions.day) &&
-          (!currentSearchOptions.period || course.period === currentSearchOptions.period) &&
-          (!currentSearchOptions.languageOptions ||
-            course.languageOptions === currentSearchOptions.languageOptions) &&
-          (!currentSearchOptions.groupName ||
+          (!searchOptions.semester || course.semester === searchOptions.semester) &&
+          (!searchOptions.targetYear ||
+            searchOptions.targetYear.length === 0 ||
+            searchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
+          (!searchOptions.typeOfConduction ||
+            course.typeOfConduction === searchOptions.typeOfConduction) &&
+          (!searchOptions.day || course.day === searchOptions.day) &&
+          (!searchOptions.period || course.period === searchOptions.period) &&
+          (!searchOptions.languageOptions ||
+            course.languageOptions === searchOptions.languageOptions) &&
+          (!searchOptions.groupName ||
             course.groupName.length === 0 ||
-            currentSearchOptions.groupName.some((group) => course.groupName.includes(group))),
+            searchOptions.groupName.some((group) => course.groupName.includes(group))),
       ),
-    [courses, currentSearchOptions],
+    [courses, searchOptions],
   );
 
   const allGroupNames = useMemo(
@@ -48,8 +48,8 @@ export const MainLayout = ({ courses }: Props) => {
       <div className="lg:hidden">
         <div className="space-y-2 py-4">
           <FilterInput
-            searchOptionsState={currentSearchOptions}
-            setSearchOptions={setSearchOptions}
+            searchOptionsState={searchOptions}
+            setSearchOptions={updateSearchOptions}
             groupNameOptions={allGroupNames}
           />
           <section>
@@ -67,8 +67,8 @@ export const MainLayout = ({ courses }: Props) => {
       <div className="hidden lg:grid lg:grid-cols-12 lg:gap-6 lg:py-6">
         <div className="col-span-8 flex flex-col gap-6">
           <FilterInput
-            searchOptionsState={currentSearchOptions}
-            setSearchOptions={setSearchOptions}
+            searchOptionsState={searchOptions}
+            setSearchOptions={updateSearchOptions}
             groupNameOptions={allGroupNames}
           />
 
