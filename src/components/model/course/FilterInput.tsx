@@ -78,7 +78,7 @@ export const FilterInput: FC<Props> = ({
           onValueChange={(value) =>
             setSearchOptions({
               typeOfConduction:
-                value === 'all' && v.is(typeOfConductionSchema, value) ? value : undefined,
+                value !== 'all' && v.is(typeOfConductionSchema, value) ? value : undefined,
             })
           }
         >
