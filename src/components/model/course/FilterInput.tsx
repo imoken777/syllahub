@@ -100,8 +100,7 @@ export const FilterInput: FC<Props> = ({
         <TimeTablePicker
           dayState={searchOptionsState.day}
           periodState={searchOptionsState.period}
-          setDayChange={(day) => setSearchOptions({ day: day })}
-          setPeriodChange={(period) => setSearchOptions({ period: period })}
+          onChange={(day, period) => setSearchOptions({ day, period })}
         />
       </div>
 

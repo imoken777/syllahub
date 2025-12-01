@@ -10,30 +10,27 @@ import { Fragment } from 'react';
 type Props = {
   dayState?: Day;
   periodState?: Period;
-  setDayChange: (day: Day | undefined) => void;
-  setPeriodChange: (period: Period | undefined) => void;
+  onChange: (day: Day | undefined, period: Period | undefined) => void;
 };
 
-export const TimeTablePicker: FC<Props> = ({
-  dayState,
-  periodState,
-  setDayChange,
-  setPeriodChange,
-}) => {
+export const TimeTablePicker: FC<Props> = ({ dayState, periodState, onChange }) => {
   const handleFieldChange = (day: Day, period: Period) => {
     const isSameSelection = dayState === day && periodState === period;
-    setDayChange(isSameSelection ? undefined : day);
-    setPeriodChange(isSameSelection ? undefined : period);
+    if (isSameSelection) {
+      onChange(undefined, undefined);
+    } else {
+      onChange(day, period);
+    }
   };
 
-  const handleDayChange = (day: Day | undefined) => {
-    setPeriodChange(undefined);
-    setDayChange(day !== dayState || periodState ? day : undefined);
+  const handleDayChange = (day: Day) => {
+    const finalValue = day !== dayState || periodState ? day : undefined;
+    onChange(finalValue, undefined);
   };
 
-  const handlePeriodChange = (period: Period | undefined) => {
-    setDayChange(undefined);
-    setPeriodChange(period !== periodState || dayState ? period : undefined);
+  const handlePeriodChange = (period: Period) => {
+    const finalValue = period !== periodState || dayState ? period : undefined;
+    onChange(undefined, finalValue);
   };
 
   const isBlankSelection = !dayState && !periodState;
