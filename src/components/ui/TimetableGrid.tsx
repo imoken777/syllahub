@@ -38,7 +38,7 @@ const getSemesterStyles = (semester?: '春学期' | '秋学期') => {
         border: 'border-orange-300',
         text: 'text-orange-900',
       };
-    default:
+    case undefined:
       return {
         bg: 'bg-blue-100',
         border: 'border-blue-300',
