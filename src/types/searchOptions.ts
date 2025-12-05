@@ -6,6 +6,7 @@ import {
   targetYearOptions,
   typeOfConductionOptions,
 } from '@/constants/searchOptions';
+import type { ParamDefinition } from '@/utils/searchParams';
 import * as v from 'valibot';
 
 export const semesterSchema = v.picklist(semesterOptions);
@@ -37,3 +38,56 @@ export const searchOptionsSchema = v.object({
   yearOfStudy: v.optional(v.number()),
 });
 export type SearchOptions = v.InferOutput<typeof searchOptionsSchema>;
+
+export const courseSearchParamDefinitions = [
+  {
+    key: 'semester',
+    schema: semesterSchema,
+  },
+  {
+    key: 'targetYear',
+    schema: targetYearOptionsSchema,
+    serialize: (value) => JSON.stringify(value),
+    deserialize: (value: string) => {
+      const parsed = v.safeParse(targetYearOptionsSchema, JSON.parse(value));
+      if (!parsed.success) {
+        throw new Error(`Failed to deserialize targetYear: ${JSON.stringify(parsed.issues)}`);
+      }
+      return parsed.output;
+    },
+  },
+  {
+    key: 'typeOfConduction',
+    schema: typeOfConductionSchema,
+  },
+  {
+    key: 'day',
+    schema: daySchema,
+  },
+  {
+    key: 'period',
+    schema: periodSchema,
+  },
+  {
+    key: 'languageOptions',
+    schema: languageOptionsSchema,
+  },
+  {
+    key: 'groupName',
+    schema: v.array(v.string()),
+    serialize: (value) => JSON.stringify(value),
+    deserialize: (value: string) => {
+      const parsed = v.safeParse(v.array(v.string()), JSON.parse(value));
+      if (!parsed.success) {
+        throw new Error(`Failed to deserialize groupName: ${JSON.stringify(parsed.issues)}`);
+      }
+      return parsed.output;
+    },
+  },
+  {
+    key: 'yearOfStudy',
+    schema: v.number(),
+    serialize: (value) => String(value),
+    deserialize: (value: string) => Number(value),
+  },
+] as const satisfies ParamDefinition<unknown>[];

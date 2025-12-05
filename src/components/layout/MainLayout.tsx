@@ -1,57 +1,42 @@
-'use client';
-
 import { CourseList } from '@/components/model/course/CourseList';
 import { EmptyResult } from '@/components/model/course/EmptyResult';
 import { FilterInput } from '@/components/model/course/FilterInput';
 import { FloatingTimetableButton } from '@/components/model/timetable/FloatingTimetableButton';
 import { TimetableDisplay } from '@/components/model/timetable/TimetableDisplay';
-import { useSearchOptions } from '@/hooks/useSearchOptions';
 import type { CourseModel } from '@/types/course';
-import { useMemo } from 'react';
+import type { SearchOptions } from '@/types/searchOptions';
 
 type Props = {
   courses: CourseModel[];
+  searchOptions: SearchOptions;
 };
 
-export const MainLayout = ({ courses }: Props) => {
-  const { searchOptions, updateSearchOptions } = useSearchOptions();
-
-  const filteredCourses = useMemo(
-    () =>
-      courses.filter(
-        (course) =>
-          (!searchOptions.semester || course.semester === searchOptions.semester) &&
-          (!searchOptions.targetYear ||
-            searchOptions.targetYear.length === 0 ||
-            searchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
-          (!searchOptions.typeOfConduction ||
-            course.typeOfConduction === searchOptions.typeOfConduction) &&
-          (!searchOptions.day || course.day === searchOptions.day) &&
-          (!searchOptions.period || course.period === searchOptions.period) &&
-          (!searchOptions.languageOptions ||
-            course.languageOptions === searchOptions.languageOptions) &&
-          (!searchOptions.groupName ||
-            course.groupName.length === 0 ||
-            searchOptions.groupName.some((group) => course.groupName.includes(group))),
-      ),
-    [courses, searchOptions],
+export const MainLayout = ({ courses, searchOptions }: Props) => {
+  const filteredCourses = courses.filter(
+    (course) =>
+      (!searchOptions.semester || course.semester === searchOptions.semester) &&
+      (!searchOptions.targetYear ||
+        searchOptions.targetYear.length === 0 ||
+        searchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
+      (!searchOptions.typeOfConduction ||
+        course.typeOfConduction === searchOptions.typeOfConduction) &&
+      (!searchOptions.day || course.day === searchOptions.day) &&
+      (!searchOptions.period || course.period === searchOptions.period) &&
+      (!searchOptions.languageOptions ||
+        course.languageOptions === searchOptions.languageOptions) &&
+      (!searchOptions.groupName ||
+        course.groupName.length === 0 ||
+        searchOptions.groupName.some((group) => course.groupName.includes(group))),
   );
 
-  const allGroupNames = useMemo(
-    () => Array.from(new Set(courses.flatMap((course) => course.groupName))),
-    [courses],
-  );
+  const allGroupNames = Array.from(new Set(courses.flatMap((course) => course.groupName)));
 
   return (
     <main className="mx-auto w-full">
       {/* モバイル表示 */}
       <div className="lg:hidden">
         <div className="space-y-2 py-4">
-          <FilterInput
-            searchOptionsState={searchOptions}
-            setSearchOptions={updateSearchOptions}
-            groupNameOptions={allGroupNames}
-          />
+          <FilterInput initialSearchOptions={searchOptions} groupNameOptions={allGroupNames} />
           <section>
             {filteredCourses.length === 0 ? (
               <EmptyResult />
@@ -66,11 +51,7 @@ export const MainLayout = ({ courses }: Props) => {
       {/* PC表示 */}
       <div className="hidden lg:grid lg:grid-cols-12 lg:gap-6 lg:py-6">
         <div className="col-span-8 flex flex-col gap-6">
-          <FilterInput
-            searchOptionsState={searchOptions}
-            setSearchOptions={updateSearchOptions}
-            groupNameOptions={allGroupNames}
-          />
+          <FilterInput initialSearchOptions={searchOptions} groupNameOptions={allGroupNames} />
 
           <section>
             {filteredCourses.length === 0 ? (

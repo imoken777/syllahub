@@ -1,75 +1,13 @@
 import type { SearchOptions } from '@/types/searchOptions';
-import {
-  daySchema,
-  languageOptionsSchema,
-  periodSchema,
-  searchOptionsSchema,
-  semesterSchema,
-  targetYearOptionsSchema,
-  typeOfConductionSchema,
-} from '@/types/searchOptions';
-import type { ParamDefinition } from '@/utils/searchParams';
-import { parseSearchParams, serializeToSearchParams } from '@/utils/searchParams';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { courseSearchParamDefinitions, searchOptionsSchema } from '@/types/searchOptions';
+import { serializeToSearchParams } from '@/utils/searchParams';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
 import * as v from 'valibot';
 
-const courseSearchParamDefinitions: ParamDefinition<unknown>[] = [
-  {
-    key: 'semester',
-    schema: semesterSchema,
-  },
-  {
-    key: 'targetYear',
-    schema: targetYearOptionsSchema,
-    serialize: (value) => JSON.stringify(value),
-    deserialize: (value) => JSON.parse(value),
-  },
-  {
-    key: 'typeOfConduction',
-    schema: typeOfConductionSchema,
-  },
-  {
-    key: 'day',
-    schema: daySchema,
-  },
-  {
-    key: 'period',
-    schema: periodSchema,
-  },
-  {
-    key: 'languageOptions',
-    schema: languageOptionsSchema,
-  },
-  {
-    key: 'groupName',
-    schema: v.array(v.string()),
-    serialize: (value) => JSON.stringify(value),
-    deserialize: (value) => JSON.parse(value),
-  },
-  {
-    key: 'yearOfStudy',
-    schema: v.number(),
-    serialize: (value) => String(value),
-    deserialize: (value) => Number(value),
-  },
-];
-
-export const useSearchOptions = () => {
-  const searchParams = useSearchParams();
+export const useSearchOptions = (initialSearchOptions: SearchOptions) => {
   const router = useRouter();
-
-  const searchOptions = useMemo(
-    (): SearchOptions =>
-      parseSearchParams(searchParams, courseSearchParamDefinitions, searchOptionsSchema).match(
-        (value) => value,
-        (error) => {
-          console.warn('Failed to parse search params:', error);
-          return {};
-        },
-      ),
-    [searchParams],
-  );
+  const [searchOptions, setSearchOptions] = useState<SearchOptions>(initialSearchOptions);
 
   const updateSearchOptions = useCallback(
     (option: SearchOptions) => {
@@ -80,6 +18,7 @@ export const useSearchOptions = () => {
         console.warn('Invalid search options:', validated.issues);
         return;
       }
+      setSearchOptions(validated.output);
 
       const params = serializeToSearchParams(
         new URLSearchParams(),

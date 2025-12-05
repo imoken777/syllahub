@@ -3,6 +3,9 @@ import { courses } from '@/drizzle/schema';
 import { getDb } from '@/lib/db';
 import { TURSO_AUTH_TOKEN, TURSO_DATABASE_URL } from '@/lib/envValues';
 import type { CourseModel } from '@/types/course';
+import type { SearchOptions } from '@/types/searchOptions';
+import { courseSearchParamDefinitions, searchOptionsSchema } from '@/types/searchOptions';
+import { parseSearchParams } from '@/utils/searchParams';
 import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { siteInfo } from './siteInfo';
@@ -10,9 +13,9 @@ import { siteInfo } from './siteInfo';
 export const generateMetadata = async ({
   searchParams,
 }: {
-  searchParams: { share?: string };
+  searchParams: Promise<{ share?: string }>;
 }): Promise<Metadata> => {
-  const isTwitterShare = searchParams.share === 'twitter';
+  const isTwitterShare = (await searchParams).share === 'twitter';
   if (isTwitterShare) {
     return {};
   }
@@ -45,7 +48,7 @@ export const generateMetadata = async ({
 
 const getCachedCourseData = unstable_cache(
   async (): Promise<CourseModel[]> => {
-    const db = await getDb(TURSO_DATABASE_URL, TURSO_AUTH_TOKEN);
+    const db = getDb(TURSO_DATABASE_URL, TURSO_AUTH_TOKEN);
     return await db.select().from(courses).all();
   },
   ['course-data'],
@@ -56,10 +59,37 @@ const getCachedCourseData = unstable_cache(
   },
 );
 
-const Home = async () => {
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) => {
   const courseData = await getCachedCourseData();
+  const params = await searchParams;
 
-  return <MainLayout courses={courseData} />;
+  const urlSearchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (Array.isArray(value)) {
+      value.forEach((v) => urlSearchParams.append(key, v));
+    } else {
+      urlSearchParams.set(key, value);
+    }
+  });
+
+  const searchOptions: SearchOptions = parseSearchParams(
+    urlSearchParams,
+    courseSearchParamDefinitions,
+    searchOptionsSchema,
+  ).match(
+    (value) => value,
+    (error) => {
+      console.warn('Failed to parse search params:', error);
+      return {};
+    },
+  );
+
+  return <MainLayout courses={courseData} searchOptions={searchOptions} />;
 };
 
 export default Home;
