@@ -2,8 +2,8 @@ pre-commit:
   parallel: true
   commands:
     eslint:
-      glob: '*.{js,jsx,ts,tsx}'
-      run: npm run check:eslint -- --file {staged_files}
+      glob: '*.{ts,tsx}'
+      run: npm run check:eslint {staged_files}
     prettier:
       glob: '*.{ts,tsx}'
       run: npx prettier --cache --check {staged_files}
