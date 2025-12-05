@@ -2,25 +2,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { TimetableProvider } from '@/contexts/TimetableContext';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { siteInfo } from './siteInfo';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-  fallback: [
-    'system-ui',
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
-    'Helvetica Neue',
-    'Arial',
-    'sans-serif',
-  ],
-});
 
 export const metadata = {
   metadataBase: new URL(siteInfo.url),
@@ -36,11 +19,9 @@ const RootLayout = ({
 }>) => (
   <html lang="ja">
     <head>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="dns-prefetch" href={siteInfo.url} />
     </head>
-    <body className={`${inter.className} flex min-h-screen flex-col`}>
+    <body className="flex min-h-screen flex-col">
       <TimetableProvider>
         <Header title={siteInfo.title} description={siteInfo.description} />
         <main className="grow">{children}</main>
