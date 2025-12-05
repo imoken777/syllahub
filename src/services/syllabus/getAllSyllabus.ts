@@ -89,9 +89,9 @@ const scrapeSyllabus = (html: string): CreateCourseDto[] => {
 };
 
 export const getAllSyllabus = async (): Promise<Result<CreateCourseDto[], string>> => {
-  // https://g-sys.toyo.ac.jp/syllabus/category/20418 から 最終ページまでのシラバスを取得
-  const startPageId = 20418;
-  const endPageId = 20442;
+  // https://g-sys.toyo.ac.jp/syllabus/category/20740 から 最終ページまでのシラバスを取得
+  const startPageId = 20740;
+  const endPageId = 20764;
   const pageRange = endPageId - startPageId + 1;
   const pageIds = Array.from({ length: pageRange }, (_, i) => startPageId + i);
   const urls = pageIds.map((id) => new URL(`https://g-sys.toyo.ac.jp/syllabus/category/${id}`));
