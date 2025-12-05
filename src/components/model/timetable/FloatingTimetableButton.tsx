@@ -1,9 +1,14 @@
 'use client';
 
-import { TimetableModal } from '@/components/model/timetable/TimetableModal';
 import { Button } from '@/components/ui/Button';
 import { Calendar } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
+
+const TimetableModal = dynamic(
+  () => import('@/components/model/timetable/TimetableModal').then((mod) => mod.TimetableModal),
+  { ssr: false },
+);
 
 export const FloatingTimetableButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

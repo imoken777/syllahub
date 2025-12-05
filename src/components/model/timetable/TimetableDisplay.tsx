@@ -15,10 +15,15 @@ import { useTimetableContext } from '@/contexts/TimetableContext';
 import { semesterSchema } from '@/types/searchOptions';
 import { cn } from '@/utils/cn';
 import { Share2Icon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import * as v from 'valibot';
-import { TimetableSharePage } from './TimetableSharePage';
 import { convertCoursesToTimetableItems } from './utils/convertCoursesToTimetableItems';
+
+const TimetableSharePage = dynamic(
+  () => import('./TimetableSharePage').then((mod) => mod.TimetableSharePage),
+  { ssr: false },
+);
 
 type TimetableDisplayVariant = 'modal' | 'sidebar';
 
