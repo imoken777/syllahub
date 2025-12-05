@@ -3,7 +3,7 @@ import { CourseItem } from './CourseItem';
 
 export const CourseList = ({ courses }: { courses: CourseModel[] }) => (
   <div className="space-y-4">
-    {courses.map((course, _) => (
+    {courses.map((course) => (
       <CourseItem key={course.courseId} course={course} />
     ))}
   </div>

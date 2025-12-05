@@ -19,7 +19,8 @@ export const updateSyllabusService = async (db: DB): Promise<Result<{ count: num
 
   const parse = v.safeParse(v.array(insertCourseSchema), data);
   if (!parse.success) {
-    return err(`Data validation failed: ${parse.issues}`);
+    const issueMessages = parse.issues.map((issue) => issue.message).join(', ');
+    return err(`Data validation failed: ${issueMessages}`);
   }
 
   try {

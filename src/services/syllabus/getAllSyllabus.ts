@@ -35,7 +35,7 @@ const fetchSyllabusHtml = async (url: URL): Promise<Result<string, string>> => {
   }
 };
 
-const scrapeSyllabus = async (html: string): Promise<CreateCourseDto[]> => {
+const scrapeSyllabus = (html: string): CreateCourseDto[] => {
   const $ = load(html);
 
   const groupName = $('td.left b').text().trim();
@@ -112,7 +112,7 @@ export const getAllSyllabus = async (): Promise<Result<CreateCourseDto[], string
     .filter((html): html is string => html !== null);
 
   try {
-    const syllabusData = await Promise.all(successfulHtmls.map((html) => scrapeSyllabus(html)));
+    const syllabusData = successfulHtmls.map((html) => scrapeSyllabus(html));
     return ok(syllabusData.flat());
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

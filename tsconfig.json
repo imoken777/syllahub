@@ -23,6 +23,12 @@
     "types": ["@cloudflare/workers-types/2023-07-01"],
     "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".open-next/worker.ts"
+  ],
   "exclude": ["node_modules"]
 }

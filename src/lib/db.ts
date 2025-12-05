@@ -5,7 +5,7 @@ export type DB = ReturnType<typeof drizzle>;
 
 let cachedDb: DB | null = null;
 
-export const getDb = async (url: string, authToken: string): Promise<DB> => {
+export const getDb = (url: string, authToken: string): DB => {
   if (cachedDb) {
     return cachedDb;
   }

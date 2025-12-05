@@ -15,7 +15,7 @@ export const runWithConcurrencyLimit = async <T>(
 ): Promise<Result<T, string>[]> => {
   if (tasks.length === 0) return [];
 
-  const results: Result<T, string>[] = new Array(tasks.length);
+  const results: Result<T, string>[] = new Array<Result<T, string>>(tasks.length);
   let taskIndex = 0;
 
   const worker = async (): Promise<void> => {

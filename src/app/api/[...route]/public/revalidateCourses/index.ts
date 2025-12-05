@@ -1,7 +1,7 @@
 import { revalidateTag } from 'next/cache';
 import { publicFactory } from '../factory';
 
-export const revalidateCoursesRouter = publicFactory.createApp().put('/', async (c) => {
+export const revalidateCoursesRouter = publicFactory.createApp().put('/', (c) => {
   revalidateTag('courses');
   return c.json(
     {

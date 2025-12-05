@@ -22,12 +22,11 @@ export const getFromStorage = <T extends v.GenericSchema>(
   }
 
   try {
-    const parsed = JSON.parse(stored);
-    const validated = v.safeParse(schema, parsed);
+    const validated = v.safeParse(schema, JSON.parse(stored));
 
     if (!validated.success) {
-      const errors = validated.issues;
-      return err(`Failed to validate ${key}: ${errors}`);
+      const issueMessages = validated.issues.map((issue) => issue.message).join(', ');
+      return err(`Failed to validate ${key}: ${issueMessages}`);
     }
 
     return ok(validated.output);
@@ -57,8 +56,8 @@ export const saveToStorage = <T extends v.GenericSchema>(
     // 保存前にvalibotスキーマで検証
     const validated = v.safeParse(schema, value);
     if (!validated.success) {
-      const errors = validated.issues;
-      return err(`Failed to validate ${key}: ${errors}`);
+      const issueMessages = validated.issues.map((issue) => issue.message).join(', ');
+      return err(`Failed to validate ${key}: ${issueMessages}`);
     }
 
     const serialized = JSON.stringify(validated.output);

@@ -2,7 +2,7 @@
 
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
-initOpenNextCloudflareForDev();
+await initOpenNextCloudflareForDev();
 
 const nextConfig = {
   serverExternalPackages: ['@libsql/isomorphic-ws'],

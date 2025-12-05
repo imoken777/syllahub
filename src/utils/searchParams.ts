@@ -37,7 +37,8 @@ export const getFromSearchParams = <T extends v.GenericSchema>(
     const validated = v.safeParse(schema, parsed);
 
     if (!validated.success) {
-      return err(`Failed to validate '${key}': ${validated.issues}`);
+      const issueMessages = validated.issues.map((issue) => issue.message).join(', ');
+      return err(`Failed to validate '${key}': ${issueMessages}`);
     }
 
     return ok(validated.output);
@@ -71,7 +72,8 @@ export const setToSearchParams = <T extends v.GenericSchema>(
   try {
     const validated = v.safeParse(schema, value);
     if (!validated.success) {
-      return err(`Failed to validate '${key}': ${validated.issues}`);
+      const issueMessages = validated.issues.map((issue) => issue.message).join(', ');
+      return err(`Failed to validate '${key}': ${issueMessages}`);
     }
 
     const serialized = serialize ? serialize(validated.output) : String(validated.output);

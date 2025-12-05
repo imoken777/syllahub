@@ -57,9 +57,7 @@ export const TimetableSharePage = ({
       }
     }
 
-    if (!container) {
-      container = document.querySelector(`${containerSelector} .grid.grid-cols-6`);
-    }
+    container ??= document.querySelector(`${containerSelector} .grid.grid-cols-6`);
 
     if (!container) {
       return err('時間割のグリッド要素が見つかりません。');
@@ -84,7 +82,7 @@ export const TimetableSharePage = ({
 
     const timetableContainerResult = getTimetableContainer();
 
-    timetableContainerResult.match(
+    await timetableContainerResult.match(
       async (timetableContainer) => {
         const imageResult = await generateElementImage(timetableContainer, ['data-remove-button']);
 
@@ -138,7 +136,7 @@ export const TimetableSharePage = ({
           <p className="pl-11 text-gray-600">まず、時間割の画像をダウンロードしてください</p>
           <div className="pl-11">
             <Button
-              onClick={handleSaveImage}
+              onClick={() => void handleSaveImage()}
               disabled={isImageGenerating || courses.length === 0}
               className="w-full"
               size="lg"
