@@ -45,16 +45,9 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
   const [springTimetable, setSpringTimetable] = useState<CourseModel[]>([]);
   const [fallTimetable, setFallTimetable] = useState<CourseModel[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // ローカルストレージから読み込み
   useEffect(() => {
-    if (!isClient) return;
-
     // 春学期の時間割データの読み込み
     const storedSpringResult = getFromStorage(SPRING_TIMETABLE_STORAGE_KEY, courseModelArraySchema);
     storedSpringResult.match(
@@ -72,7 +65,7 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
         console.error('Failed to parse fall timetable from localStorage:', error);
       },
     );
-  }, [isClient]);
+  }, []);
 
   // 全時間割（春学期 + 秋学期）
   const timetable = useMemo(
@@ -94,8 +87,6 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
   // 学期ごとの時間割を保存
   const saveSemesterTimetable = useCallback(
     (semester: Semester, updater: (prev: CourseModel[]) => CourseModel[]) => {
-      if (!isClient) return;
-
       if (semester === '春学期') {
         setSpringTimetable((prev) => {
           const newTimetable = updater(prev);
@@ -124,16 +115,12 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
         });
       }
     },
-    [isClient],
+    [],
   );
 
-  const updateSelectedSemester = useCallback(
-    (semester: Semester | null) => {
-      if (!isClient) return;
-      setSelectedSemester(semester);
-    },
-    [isClient],
-  );
+  const updateSelectedSemester = useCallback((semester: Semester | null) => {
+    setSelectedSemester(semester);
+  }, []);
 
   // 選択された学期でフィルタリングされた時間割
   const filteredTimetable = useMemo(
