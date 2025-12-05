@@ -9,7 +9,7 @@ import { default as handler } from '../../.open-next/worker';
 
 const scheduled: ExportedHandlerScheduledHandler<CloudflareEnv> = (_, env, ctx) => {
   const db = getDb(env.TURSO_DATABASE_URL, env.TURSO_AUTH_TOKEN);
-  const apiClient = hc<ApiType>('/');
+  const apiClient = hc<ApiType>(env.APP_ORIGIN_URL);
 
   ctx.waitUntil(
     updateSyllabusService(db).then((result) =>
