@@ -14,9 +14,9 @@ crons = ["0 15 * * *"]
 [observability]
 enabled = true
 
-[[kv_namespaces]]
-binding = "NEXT_INC_CACHE_KV"
-id = "ba67819f64d14ef9a23c5c21659101d5"
+[[r2_buckets]]
+bucket_name = "syllahub-incremental-cache"
+binding = "NEXT_INC_CACHE_R2_BUCKET"
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
