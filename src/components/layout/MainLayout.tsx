@@ -1,42 +1,62 @@
+'use client';
+
 import { CourseList } from '@/components/model/course/CourseList';
 import { EmptyResult } from '@/components/model/course/EmptyResult';
 import { FilterInput } from '@/components/model/course/FilterInput';
 import { FloatingTimetableButton } from '@/components/model/timetable/FloatingTimetableButton';
 import { TimetableDisplay } from '@/components/model/timetable/TimetableDisplay';
+import { useSearchOptions } from '@/hooks/useSearchOptions';
 import type { CourseModel } from '@/types/course';
-import type { SearchOptions } from '@/types/searchOptions';
+import { useMemo } from 'react';
 
 type Props = {
   courses: CourseModel[];
-  searchOptions: SearchOptions;
 };
 
-export const MainLayout = ({ courses, searchOptions }: Props) => {
-  const filteredCourses = courses.filter(
-    (course) =>
-      (!searchOptions.semester || course.semester === searchOptions.semester) &&
-      (!searchOptions.targetYear ||
-        searchOptions.targetYear.length === 0 ||
-        searchOptions.targetYear.some((year) => course.targetYear?.includes(year))) &&
-      (!searchOptions.typeOfConduction ||
-        course.typeOfConduction === searchOptions.typeOfConduction) &&
-      (!searchOptions.day || course.day === searchOptions.day) &&
-      (!searchOptions.period || course.period === searchOptions.period) &&
-      (!searchOptions.languageOptions ||
-        course.languageOptions === searchOptions.languageOptions) &&
-      (!searchOptions.groupName ||
-        course.groupName.length === 0 ||
-        searchOptions.groupName.some((group) => course.groupName.includes(group))),
-  );
+export const MainLayout = ({ courses }: Props) => {
+  const { searchOptions } = useSearchOptions();
 
-  const allGroupNames = Array.from(new Set(courses.flatMap((course) => course.groupName)));
+  const filteredCourses = useMemo(() => {
+    const targetYearSet = searchOptions.targetYear ? new Set(searchOptions.targetYear) : null;
+    const groupNameSet = searchOptions.groupName ? new Set(searchOptions.groupName) : null;
+
+    return courses.filter((course) => {
+      if (searchOptions.semester && course.semester !== searchOptions.semester) return false;
+      if (
+        searchOptions.typeOfConduction &&
+        course.typeOfConduction !== searchOptions.typeOfConduction
+      )
+        return false;
+      if (searchOptions.day && course.day !== searchOptions.day) return false;
+      if (searchOptions.period && course.period !== searchOptions.period) return false;
+      if (searchOptions.languageOptions && course.languageOptions !== searchOptions.languageOptions)
+        return false;
+
+      if (targetYearSet && course.targetYear) {
+        if (!course.targetYear.some((year) => targetYearSet.has(year))) return false;
+      }
+      if (groupNameSet && course.groupName) {
+        const groupNames: string[] = Array.isArray(course.groupName)
+          ? course.groupName
+          : [course.groupName];
+        if (!groupNames.some((group) => groupNameSet.has(group))) return false;
+      }
+
+      return true;
+    });
+  }, [courses, searchOptions]);
+
+  const allGroupNames = useMemo(
+    () => Array.from(new Set(courses.flatMap((course) => course.groupName))),
+    [courses],
+  );
 
   return (
     <main className="mx-auto w-full">
       {/* モバイル表示 */}
       <div className="lg:hidden">
         <div className="space-y-2 py-4">
-          <FilterInput initialSearchOptions={searchOptions} groupNameOptions={allGroupNames} />
+          <FilterInput groupNameOptions={allGroupNames} />
           <section>
             {filteredCourses.length === 0 ? (
               <EmptyResult />
@@ -51,7 +71,7 @@ export const MainLayout = ({ courses, searchOptions }: Props) => {
       {/* PC表示 */}
       <div className="hidden lg:grid lg:grid-cols-12 lg:gap-6 lg:py-6">
         <div className="col-span-8 flex flex-col gap-6">
-          <FilterInput initialSearchOptions={searchOptions} groupNameOptions={allGroupNames} />
+          <FilterInput groupNameOptions={allGroupNames} />
 
           <section>
             {filteredCourses.length === 0 ? (

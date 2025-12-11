@@ -12,9 +12,8 @@ export const generateTimetableShareText = (
 ): string => {
   const semesterDisplay = semester ?? '全期間';
   const hashTags = `#${siteInfo.title} #INIAD #情報連携 #時間割共有`;
-  const shareUrl = `${siteInfo.url}?share=twitter`;
 
-  return `${siteInfo.title}で${semesterDisplay}の時間割を作成しました！📚\n登録講義数: ${courseCount}件\n\n${shareUrl}\n\n${hashTags}`;
+  return `${siteInfo.title}で${semesterDisplay}の時間割を作成しました！📚\n登録講義数: ${courseCount}件\n\n${siteInfo.url}\n\n${hashTags}`;
 };
 
 /**

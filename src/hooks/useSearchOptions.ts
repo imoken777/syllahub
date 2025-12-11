@@ -1,13 +1,25 @@
 import type { SearchOptions } from '@/types/searchOptions';
 import { courseSearchParamDefinitions, searchOptionsSchema } from '@/types/searchOptions';
-import { serializeToSearchParams } from '@/utils/searchParams';
-import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { parseSearchParams, serializeToSearchParams } from '@/utils/searchParams';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 import * as v from 'valibot';
 
-export const useSearchOptions = (initialSearchOptions: SearchOptions) => {
+export const useSearchOptions = () => {
   const router = useRouter();
-  const [searchOptions, setSearchOptions] = useState<SearchOptions>(initialSearchOptions);
+  const urlSearchParams = useSearchParams();
+
+  const searchOptions: SearchOptions = useMemo(
+    () =>
+      parseSearchParams(urlSearchParams, courseSearchParamDefinitions, searchOptionsSchema).match(
+        (value) => value,
+        (error) => {
+          console.warn('Failed to parse search params:', error);
+          return {};
+        },
+      ),
+    [urlSearchParams],
+  );
 
   const updateSearchOptions = useCallback(
     (option: SearchOptions) => {
@@ -18,7 +30,6 @@ export const useSearchOptions = (initialSearchOptions: SearchOptions) => {
         console.warn('Invalid search options:', validated.issues);
         return;
       }
-      setSearchOptions(validated.output);
 
       const params = serializeToSearchParams(
         new URLSearchParams(),

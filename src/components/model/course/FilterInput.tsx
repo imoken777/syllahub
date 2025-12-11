@@ -16,18 +16,16 @@ import {
   typeOfConductionOptions,
 } from '@/constants/searchOptions';
 import { useSearchOptions } from '@/hooks/useSearchOptions';
-import type { SearchOptions } from '@/types/searchOptions';
 import { semesterSchema, typeOfConductionSchema } from '@/types/searchOptions';
 import * as v from 'valibot';
 
 import type { FC } from 'react';
 
 type Props = {
-  initialSearchOptions: SearchOptions;
   groupNameOptions: string[];
 };
-export const FilterInput: FC<Props> = ({ initialSearchOptions, groupNameOptions }) => {
-  const { searchOptions, updateSearchOptions } = useSearchOptions(initialSearchOptions);
+export const FilterInput: FC<Props> = ({ groupNameOptions }) => {
+  const { searchOptions, updateSearchOptions } = useSearchOptions();
 
   return (
     <search className="mx-auto p-4" aria-label="講義検索・フィルター">
