@@ -51,7 +51,7 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
     // 春学期の時間割データの読み込み
     const storedSpringResult = getFromStorage(SPRING_TIMETABLE_STORAGE_KEY, courseModelArraySchema);
     storedSpringResult.match(
-      (parsed) => setSpringTimetable(parsed),
+      (parsed) => setSpringTimetable(parsed ?? []),
       (error) => {
         console.error('Failed to parse spring timetable from localStorage:', error);
       },
@@ -60,7 +60,7 @@ export const TimetableProvider = ({ children }: TimetableProviderProps) => {
     // 秋学期の時間割データの読み込み
     const storedFallResult = getFromStorage(FALL_TIMETABLE_STORAGE_KEY, courseModelArraySchema);
     storedFallResult.match(
-      (parsed) => setFallTimetable(parsed),
+      (parsed) => setFallTimetable(parsed ?? []),
       (error) => {
         console.error('Failed to parse fall timetable from localStorage:', error);
       },

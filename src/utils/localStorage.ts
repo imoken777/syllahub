@@ -6,19 +6,19 @@ import * as v from 'valibot';
  * localStorageから値を取得してパースし、valibotスキーマで検証する関数
  * @param key - localStorageのキー
  * @param schema - 検証に使用するvalibotスキーマ
- * @returns 検証済みの値、またはエラー
+ * @returns 検証済みの値、値がない場合はnull、パース/検証エラーの場合はエラー
  */
 export const getFromStorage = <T extends v.GenericSchema>(
   key: string,
   schema: T,
-): Result<v.InferOutput<T>, string> => {
+): Result<v.InferOutput<T> | null, string> => {
   if (typeof window === 'undefined') {
     return err('localStorage is not available on the server');
   }
 
   const stored = localStorage.getItem(key);
   if (!stored) {
-    return err('Item not found in localStorage');
+    return ok(null);
   }
 
   try {
