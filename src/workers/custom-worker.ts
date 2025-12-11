@@ -15,7 +15,7 @@ const scheduled: ExportedHandlerScheduledHandler<CloudflareEnv> = (_, env, ctx) 
     updateSyllabusService(db).then((result) =>
       result.match(
         async (res) => {
-          await apiClient.api.revalidateCourses.$put().catch(console.error);
+          await apiClient.api.revalidateRootPage.$put().catch(console.error);
           // eslint-disable-next-line no-console
           console.log('Syllabus update completed:', res.count);
         },
