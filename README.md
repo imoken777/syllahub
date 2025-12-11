@@ -28,7 +28,7 @@ SyllahubはINIAD（東洋大学情報連携学部）の学生向けに作られ�
 
 ### フロントエンド
 
-- **Next.js 14** - React フレームワーク
+- **Next.js** - React フレームワーク
 - **TypeScript** - 型安全性とコード品質の向上
 - **Tailwind CSS** - ユーティリティファーストのCSSフレームワーク
 - **Radix UI** - アクセシブルなコンポーネントライブラリ
