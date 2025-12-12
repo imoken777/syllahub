@@ -13,7 +13,6 @@ import { TimetableGrid } from '@/components/ui/TimetableGrid';
 import { dayOptions, periodOptions, semesterOptions } from '@/constants/searchOptions';
 import { useTimetableContext } from '@/contexts/TimetableContext';
 import { semesterSchema } from '@/types/searchOptions';
-import { cn } from '@/utils/cn';
 import { Share2Icon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
@@ -151,22 +150,7 @@ export const TimetableDisplay = ({ variant }: Props) => {
       </div>
 
       <div className="mt-4" data-timetable-container>
-        {filteredTimetable.length === 0 ? (
-          <div className="flex items-center justify-center py-12 text-gray-500">
-            <div className="text-center">
-              <p className={cn('text-lg', isSidebarVariant && 'text-sm')}>
-                {selectedSemester
-                  ? `${selectedSemester}の講義が登録されていません`
-                  : 'まだ講義が登録されていません'}
-              </p>
-              <p className={cn('mt-2 text-sm', isSidebarVariant && 'mt-1 text-xs')}>
-                講義一覧から「マイ時間割に追加」ボタンで登録してください
-              </p>
-            </div>
-          </div>
-        ) : (
-          <TimetableGrid dayHeaders={dayOptions} periodHeaders={periodOptions} items={items} />
-        )}
+        <TimetableGrid dayHeaders={dayOptions} periodHeaders={periodOptions} items={items} />
       </div>
     </div>
   );
