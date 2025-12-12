@@ -1,7 +1,7 @@
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { TimetableProvider } from '@/contexts/TimetableContext';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { siteInfo } from './siteInfo';
 
@@ -11,6 +11,12 @@ export const metadata = {
   authors: [{ name: 'imoken777', url: 'https://github.com/imoken777' }],
   robots: 'index, follow',
 } as const satisfies Metadata;
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#ffffff',
+};
 
 const RootLayout = ({
   children,
