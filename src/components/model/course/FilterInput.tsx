@@ -39,7 +39,7 @@ export const FilterInput: FC<Props> = ({ groupNameOptions }) => {
               })
             }
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="学期を選択">
               <SelectValue placeholder="学期を選択" />
             </SelectTrigger>
             <SelectContent>
@@ -79,7 +79,7 @@ export const FilterInput: FC<Props> = ({ groupNameOptions }) => {
               })
             }
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="授業形態を選択">
               <SelectValue placeholder="授業形態を選択" />
             </SelectTrigger>
             <SelectContent>

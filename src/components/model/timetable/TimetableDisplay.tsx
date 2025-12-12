@@ -135,7 +135,7 @@ export const TimetableDisplay = ({ variant }: Props) => {
             setSelectedSemester(newSemester);
           }}
         >
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48" aria-label="マイ時間割の学期を選択">
             <SelectValue placeholder="学期を選択" />
           </SelectTrigger>
           <SelectContent>
